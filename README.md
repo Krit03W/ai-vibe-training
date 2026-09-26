@@ -17,12 +17,12 @@
 | 09.15–10.15 | **Module 1** รู้จัก AI และการเขียนคำสั่งให้ได้ผล | [01_PROMPT_WORKSHOP](manual/01_PROMPT_WORKSHOP.md) | ❌ |
 | 10.15–10.30 | พักเบรก + ทดสอบ SSH เข้า VM 1 ครั้ง | [02_SSH_VM](manual/02_SSH_VM.md) | ✅ เริ่มแตะ |
 | 10.30–11.20 | **Module 2** ใช้ AI สร้างเครื่องมือโดยไม่ต้องเขียนโปรแกรม | [03_VIBE_CODING_WORKSHOP](manual/03_VIBE_CODING_WORKSHOP.md) | ✅ เต็มที่ |
-| 11.20–12.00 | **Module 3** การใช้ AI ในการผลิตสื่อ | [04_MEDIA_WORKSHOP](manual/04_MEDIA_WORKSHOP.md) | ❌ |
+| 11.20–12.00 | **Module 3** การใช้ AI ในการผลิตสื่อ | [04_MEDIA_WORKSHOP](manual/04_MEDIA_WORKSHOP.md) | ✅ (ตัดต่อวิดีโอ) |
 | 12.00–13.00 | พักกลางวัน | — | — |
 | 13.00–13.40 | **Module 4** ใช้ AI อย่างปลอดภัยและถูกระเบียบ | [05_AI_SAFETY_WORKSHOP](manual/05_AI_SAFETY_WORKSHOP.md) | ❌ |
 | 13.40–14.20 | **Module 5** ระบบ AI ค้นหา-ตอบคำถามจากเอกสาร (RAG) | [06_RAG_CONCEPT](manual/06_RAG_CONCEPT.md) | ❌ (สาธิต) |
 | 14.20–14.50 | **Deploy จริง** Nginx + Subdomain + Cloudflare DNS | [07_DEPLOY_CLOUDFLARE](manual/07_DEPLOY_CLOUDFLARE.md) | ✅ เต็มที่ |
-| 14.50–15.00 | สรุป ถาม-ตอบ ปิดการอบรม | [slides/07_closing](slides/07_closing.md) | — |
+| 14.50–15.00 | สรุป ถาม-ตอบ ปิดการอบรม | — | — |
 
 ---
 
@@ -40,12 +40,13 @@
    - คำสั่ง `ssh` บน Windows / macOS, การพิมพ์รหัสผ่านที่ "มองไม่เห็น"
    - คำสั่งพื้นฐาน 6 คำสั่งที่ต้องรู้ (`pwd`, `ls`, `cd`, `mkdir`, `cat`, `exit`)
 3. [**03_VIBE_CODING_WORKSHOP.md**](manual/03_VIBE_CODING_WORKSHOP.md) — **Workshop 2: ติดตั้ง AI CLI (Claude Code) แล้วสั่งสร้างเครื่องมือ**
-   - ติดตั้งและล็อกอิน Claude Code บน VM
+   - ติดตั้ง Claude Code บน VM และเชื่อมกับ AI GLM ของเรา
    - Prompt สำเร็จรูป 5 โจทย์ (เครื่องคำนวณวันลา, แบบฟอร์ม, หน้าแนะนำหน่วยงาน ฯลฯ)
    - ให้ AI สร้างสูตร Excel จากไฟล์ตัวอย่าง
-4. [**04_MEDIA_WORKSHOP.md**](manual/04_MEDIA_WORKSHOP.md) — **Workshop 3: ผลิตโปสเตอร์ประชาสัมพันธ์ด้วย AI**
+4. [**04_MEDIA_WORKSHOP.md**](manual/04_MEDIA_WORKSHOP.md) — **Workshop 3: ผลิตสื่อด้วย AI — โปสเตอร์ + ตัดต่อวิดีโอ**
    - โครงสร้าง prompt ภาพ 5 ส่วน + prompt ตัวอย่างพร้อมคัดลอก
    - ขั้นตอนใน Canva AI / Ideogram / ChatGPT และหลัก "แก้ ไม่ใช่สร้างใหม่"
+   - ให้ Claude Code + GLM ตัดต่อคลิปประชาสัมพันธ์ด้วย [HyperFrames](https://hyperframes.heygen.com) บน VM แล้วดาวน์โหลดเป็น MP4
 5. [**05_AI_SAFETY_WORKSHOP.md**](manual/05_AI_SAFETY_WORKSHOP.md) — **Workshop 4: "ใส่ AI ได้ไหม?" + ฝึกปกปิดข้อมูล**
    - สถานการณ์จำลอง 8 ข้อพร้อมเฉลย
    - แบบฝึกหัด masking ข้อมูลส่วนบุคคลก่อนส่งให้ AI
@@ -56,7 +57,11 @@
    - สั่ง AI ติดตั้ง Nginx (มีคำสั่งสำรองแบบ copy-paste หาก AI ทำไม่สำเร็จ)
    - เพิ่ม A record ใน Cloudflare และเปิด HTTPS อัตโนมัติ (เมฆส้ม)
 8. [**08_CHEATSHEET.md**](manual/08_CHEATSHEET.md) — **สรุปคำสั่งและ Prompt ทั้งหมดในหน้าเดียว** (พิมพ์แจกได้)
-9. [**09_TROUBLESHOOTING.md**](manual/09_TROUBLESHOOTING.md) — **เจอปัญหา แก้ตรงนี้** (SSH เข้าไม่ได้, AI CLI ล็อกอินไม่ได้, เว็บไม่ขึ้น ฯลฯ)
+9. [**09_TROUBLESHOOTING.md**](manual/09_TROUBLESHOOTING.md) — **เจอปัญหา แก้ตรงนี้** (SSH เข้าไม่ได้, เชื่อม GLM ไม่ได้, render วิดีโอไม่ผ่าน, เว็บไม่ขึ้น ฯลฯ)
+
+10. [**10_WORKSHOP_BANK.md**](manual/10_WORKSHOP_BANK.md) — **คลัง Workshop ทั้ง 6 หัวข้อ (หลัก + สำรอง 40+ กิจกรรม)** สำหรับคนที่ทำเสร็จเร็ว หรือทำต่อเองหลังอบรม
+   - เจนภาพ / อินโฟกราฟิก / ตัดต่อวิดีโอหลายแบบด้วย HyperFrames
+   - เครื่องมือเพิ่ม 8 โจทย์, Dashboard จาก CSV, เครื่องมือปิดบังข้อมูลส่วนบุคคล, จับผิดอีเมลปลอม, หน้าผลงาน + QR Code
 
 📂 **ไฟล์ตัวอย่างสำหรับฝึก** อยู่ในโฟลเดอร์ [`manual/samples/`](manual/samples/) — เป็น **ข้อมูลสมมติทั้งหมด** ใช้ฝึกแทนเอกสารจริงได้
 
@@ -70,7 +75,7 @@
 | [**instructor/02_RUN_OF_SHOW.md**](instructor/02_RUN_OF_SHOW.md) | บทดำเนินรายการรายนาที จุดเสี่ยง และแผนสำรองของแต่ละช่วง |
 | [**instructor/03_TA_GUIDE.md**](instructor/03_TA_GUIDE.md) | คู่มือ TA: วิธีเดินช่วย, ปัญหาที่พบบ่อย, คำสั่งตรวจเครื่องผู้อบรม |
 | [`instructor/scripts/`](instructor/scripts/) | สคริปต์เตรียม VM, ตรวจ VM ทุกเครื่อง, สร้าง DNS record จาก CSV |
-| [**slides/**](slides/) | สไลด์ทุก Module (Markdown แบบ [Marp](https://marp.app/)) แก้ไขง่าย export เป็น PDF/PPTX ได้ |
+| [**slides/SLIDE_SCRIPT.md**](slides/SLIDE_SCRIPT.md) | สคริปต์สไลด์ทั้งวัน (เนื้อหาสอน + Workshop + สไลด์สำรอง) สำหรับทำสไลด์ใน Canva |
 
 ---
 

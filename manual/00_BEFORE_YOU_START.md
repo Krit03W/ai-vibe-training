@@ -110,8 +110,8 @@ echo "สวัสดีครับ ผมพร้อมอบรมแล้�
 | Module | เครื่องมือ | ต้องมีบัญชีไหม |
 |---|---|---|
 | Module 1 (Prompt) | ChatGPT / Claude / Microsoft Copilot | บัญชีฟรีก็ได้ — **ล็อกอินไว้ก่อนเริ่ม** |
-| Module 2 (Vibe Coding) | Claude Code (AI CLI) บน VM | ทีมงานแจกวิธีล็อกอิน/บัญชีหน้างาน |
-| Module 3 (สื่อ) | Canva / Ideogram / ChatGPT | บัญชีฟรีก็ได้ — **ล็อกอินไว้ก่อนเริ่ม** |
+| Module 2 (Vibe Coding) | Claude Code (AI CLI) บน VM เชื่อมกับ AI GLM | ไม่ต้องมีบัญชี — ใช้ **API Key ของ GLM ในซอง** |
+| Module 3 (สื่อ) | Canva / Ideogram / ChatGPT + HyperFrames บน VM | เว็บ: บัญชีฟรีก็ได้ — **ล็อกอินไว้ก่อนเริ่ม** · HyperFrames: ทีมงานติดตั้งไว้แล้ว |
 | Deploy | Cloudflare Dashboard | ทีมงานแจกบัญชีหน้างาน |
 
 > ⚠️ วันนี้ **ห้ามใช้เอกสารจริงที่มีข้อมูลส่วนบุคคลหรือเอกสารลับ** ป้อนเข้า AI — ใช้ไฟล์ตัวอย่างใน [`samples/`](samples/) แทน (รายละเอียดใน Module 4)

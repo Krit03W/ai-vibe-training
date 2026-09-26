@@ -8,7 +8,9 @@
 | [02_employment_stats_q2.md](02_employment_stats_q2.md) | Workshop 1 | สรุปสถิติบริการจัดหางาน → ฝึกสรุปเอกสาร / ร่างรายงาน |
 | [03_letter_request.md](03_letter_request.md) | Workshop 1 | ข้อมูลสำหรับร่างหนังสือราชการ |
 | [04_visitors_sep2569.csv](04_visitors_sep2569.csv) | Module 2 Part A | ตารางผู้มาติดต่อ 199 แถว → ฝึกขอสูตร Excel (คอลัมน์จังหวัดตั้งใจพิมพ์ไม่เหมือนกันไว้ฝึกจัดระเบียบ) |
-| [rag/](rag/) | Module 5 | เอกสาร 3 ชิ้นสำหรับสาธิตระบบ RAG |
+| [05_pii_fake.txt](05_pii_fake.txt) | Workshop 4C | ข้อความร้องเรียนปลอมที่มีเลขบัตร เบอร์โทร อีเมล สำหรับทดสอบเครื่องมือปกปิดข้อมูล |
+| [06_phishing_emails.md](06_phishing_emails.md) | Workshop 4D | อีเมลตัวอย่าง 4 ฉบับ ฝึกจับผิดอีเมลปลอม (มีเฉลย) |
+| [rag/](rag/) | Module 5 | เอกสาร 3 ชิ้นสำหรับสาธิตระบบ RAG + `rag_04` ฉบับเก่าที่ยกเลิกแล้ว (ใช้ใน Workshop 5D) |
 
 ## วิธีคัดลอกเนื้อหาไปวางในเว็บ AI
 

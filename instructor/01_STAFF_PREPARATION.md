@@ -7,7 +7,8 @@
 | # | สิ่งที่ต้องเตรียม | ใช้ใน | ผู้รับผิดชอบ | เสร็จ |
 |---|---|---|---|---|
 | 1 | VM Ubuntu 1 เครื่อง/คน (+ สำรอง 2–3 เครื่อง) | Module 2, Deploy | ทีม Infra | ☐ |
-| 2 | บัญชี AI CLI (Claude Code) สำหรับผู้อบรม | Module 2, Deploy | ผู้ประสานงาน | ☐ |
+| 2 | AI GLM: endpoint + ชื่อโมเดล + API Key ต่อคน (Claude Code เชื่อมผ่าน GLM) | Module 2, 3, Deploy | ทีม AI / Infra | ☐ |
+| 2.1 | คลิปตัวอย่างสำหรับตัดต่อ + ทดสอบ HyperFrames render บน VM | Module 3 | วิทยากร | ☐ |
 | 3 | Cloudflare Zone + สิทธิ์ผู้อบรม + SSL mode Flexible | Deploy | ทีม Infra | ☐ |
 | 4 | บัตร VM + ซองรหัสผ่าน | ทั้งวัน | ผู้ประสานงาน | ☐ |
 | 5 | แอปสำรองที่ deploy เสร็จแล้ว | Deploy | วิทยากร | ☐ |
@@ -45,9 +46,11 @@ sudo bash setup_vm.sh trainee01 'รหัสผ่านของผู้อ�
 
 1. สร้าง user พร้อมรหัสผ่าน และเปิด SSH แบบใช้รหัสผ่าน
 2. ให้สิทธิ์ `sudo` **แบบไม่ต้องใส่รหัสผ่าน (NOPASSWD)** — ⚠️ **จำเป็น** เพราะ Claude Code รันคำสั่งแบบไม่มี terminal ให้กรอกรหัส ถ้าไม่ตั้ง AI จะติดตั้ง nginx ไม่ได้
-3. ติดตั้ง `curl`, `git`, `python3`, `ca-certificates`
+3. ติดตั้ง `curl`, `git`, `python3`, **FFmpeg**, **Node.js 22**, **Google Chrome**, **ฟอนต์ไทย** (`fonts-thai-tlwg`, `fonts-noto-core`) และ **HyperFrames CLI** (`npm install -g hyperframes`) สำหรับ Workshop 3B
 4. ตั้ง hostname เป็น `training-vm-<ชื่อผู้ใช้>` (ช่วยให้ TA ดูหน้าจอแล้วรู้ว่าเครื่องใคร)
-5. **ไม่** ติดตั้ง Claude Code และ **ไม่** ติดตั้ง nginx (ให้ผู้อบรมทำเองใน Workshop)
+5. สร้างโฟลเดอร์ `/opt/training/media` สำหรับคลิปตัวอย่าง (ต้องคัดลอกคลิปเข้าไปเอง — ดูหัวข้อ 2.2)
+6. รัน `hyperframes doctor` ในนามผู้อบรมเพื่อตรวจความพร้อม
+7. **ไม่** ติดตั้ง Claude Code และ **ไม่** ติดตั้ง nginx (ให้ผู้อบรมทำเองใน Workshop)
 
 ### ตรวจทุกเครื่องก่อนวันจริง
 
@@ -67,26 +70,52 @@ DOMAIN=your-training-domain.com bash instructor/scripts/check_vms.sh ~/secure/tr
 
 ---
 
-## 2. บัญชี AI CLI (Claude Code)
+## 2. AI GLM + HyperFrames
 
-Claude Code ต้องล็อกอินด้วยบัญชีอย่างใดอย่างหนึ่ง เลือกแบบที่เหมาะกับงบประมาณ:
+### 2.1 AI GLM สำหรับ Claude Code
 
-| ทางเลือก | ข้อดี | ข้อควรระวัง |
+ผู้อบรมติดตั้ง Claude Code เอง แล้ว **ตั้งค่าให้ส่งงานไปที่ AI GLM ของเรา** ผ่านไฟล์ `~/.claude/settings.json` (คู่มือ 03 ขั้นที่ 2.1) — ไม่ต้องใช้บัญชี Claude
+
+ต้องเตรียม:
+
+| รายการ | ตัวอย่างในคู่มือ (placeholder) | หมายเหตุ |
 |---|---|---|
-| **A. บัญชี Claude แบบ subscription** (Pro / Team) 1 บัญชีต่อคน | ล็อกอินผ่านลิงก์ ผู้อบรมเห็นขั้นตอนจริง | ต้องเตรียมบัญชีล่วงหน้า; ผู้อบรมหลายคนใช้บัญชีเดียวกันอาจชน usage limit |
-| **B. API Key จาก Claude Console** (1 key ต่อคน) | ไม่ต้องล็อกอินผ่านเบราว์เซอร์ ตั้งวงเงินได้ | ต้องสร้าง Workspace แยกและ **ตั้ง spend limit**; **revoke ทุก key หลังอบรม** |
+| Endpoint ที่รองรับ Anthropic API | `https://your-glm-endpoint/api/anthropic` | ต้องรับ request รูปแบบ Anthropic Messages API (`/v1/messages`) |
+| ชื่อโมเดล | `your-glm-model` | ใช้ชื่อเดียวกันทั้ง OPUS / SONNET / HAIKU ได้ ถ้ามีรุ่นเล็ก ใส่ใน HAIKU |
+| API Key | — (แจกในซอง) | **1 key ต่อผู้อบรม** ตั้งวงเงิน/rate limit ต่อ key และ **revoke หลังอบรม** |
 
-แนวทางที่แนะนำ: เตรียม **ทางเลือก A เป็นหลัก** และมี **API Key (ทางเลือก B) สำรอง** ในซองสำหรับคนที่ล็อกอินไม่ผ่าน
+**ก่อนวันอบรม แทน placeholder ทั้ง repo ด้วยค่าจริง** (endpoint และชื่อโมเดลไม่ใช่ความลับ แต่ **ห้าม commit API Key**):
 
-### ถ้าใช้ API Key
+```bash
+# macOS (Linux: ใช้ sed -i โดยไม่มี '')
+grep -rl 'your-glm-endpoint\|your-glm-model' README.md manual instructor slides \
+  | xargs sed -i '' -e 's#https://your-glm-endpoint/api/anthropic#https://GLM-ENDPOINT-จริง#g' \
+                    -e 's#https://your-glm-endpoint#https://GLM-HOST-จริง#g' \
+                    -e 's#your-glm-model#ชื่อโมเดลจริง#g'
+```
 
-1. Claude Console → สร้าง Workspace ชื่อ `training-YYYYMMDD`
-2. ตั้ง **Spend limit** ของ Workspace (ประมาณการ: งาน Workshop ใช้ไม่มาก แต่ตั้งเพดานกันเหตุไม่คาดคิด)
-3. สร้าง API Key 1 key ต่อผู้อบรม ตั้งชื่อตาม username (`trainee01` …)
-4. พิมพ์ใส่ซองแยกจากรหัส VM
-5. **หลังอบรม: revoke ทุก key ใน Workspace นี้**
+ทดสอบบน VM หนึ่งเครื่องด้วยบัญชีผู้อบรมจริง: ตั้งค่าตามคู่มือ 03 → `claude` → ถาม 1 คำถาม → สั่งสร้าง `index.html` ตามโจทย์ A ให้ครบรอบ
 
-> ⚠️ **ห้าม commit API Key หรือรหัสผ่านลง repository นี้** (เป็น public repo) — เก็บรายชื่อจริงไว้นอก git เท่านั้น
+> ⚠️ ผู้อบรม 20+ คนส่งงานพร้อมกัน — ตรวจว่า GLM รองรับ concurrency และ context ยาว (Claude Code ส่ง system prompt + skills ค่อนข้างยาว) ตั้ง `API_TIMEOUT_MS` ไว้ 600000 (10 นาที) แล้วในคู่มือ
+
+### 2.2 HyperFrames (Workshop 3B ตัดต่อวิดีโอ)
+
+`setup_vm.sh` ติดตั้ง Node.js 22, FFmpeg, Chrome, ฟอนต์ไทย และ HyperFrames CLI ให้แล้ว ที่ต้องทำเพิ่ม:
+
+1. **คลิปตัวอย่าง 3–4 คลิป** (ความยาวคลิปละ 5–10 วินาที, MP4 H.264, 1080p หรือต่ำกว่า) — ใช้คลิปที่ **หน่วยงานเป็นเจ้าของ** หรือคลิปฟรีที่อนุญาตให้ใช้ (เช่น Pexels / Pixabay) เนื้อหาเกี่ยวกับการทำงาน / สัมภาษณ์งาน / บูธรับสมัคร **ไม่มีใบหน้าบุคคลที่ไม่ได้ให้อนุญาต**
+2. ตั้งชื่อ `clip1.mp4`, `clip2.mp4`, `clip3.mp4` แล้วคัดลอกไปทุก VM:
+
+   ```bash
+   # จากเครื่องทีมงาน: คัดลอกคลิปไปทุก VM ตามรายชื่อใน CSV (ใช้ user ผู้ดูแลที่มี sudo)
+   tail -n +2 ~/secure/trainees.csv | while IFS=, read -r user _ ip _; do
+     scp clips/*.mp4 admin@"$ip":/tmp/ && ssh admin@"$ip" 'sudo mv /tmp/clip*.mp4 /opt/training/media/ && sudo chmod 644 /opt/training/media/*'
+   done
+   ```
+
+3. **ทดสอบครบรอบบน VM 1 เครื่อง** ด้วยบัญชีผู้อบรม: skills update → prompt แบบ A → preview ผ่าน SSH tunnel → render → scp ลงเครื่อง — จับเวลาไว้ (เป้าหมาย < 15 นาที) และตรวจว่าตัวหนังสือไทยในวิดีโอไม่เป็น □□□
+4. เตรียม **คลิปผลลัพธ์ตัวอย่าง** ที่ render เสร็จแล้วไว้โชว์ตอนเริ่ม Workshop และเป็นแผนสำรอง
+
+> 💡 Render ใช้ Chrome ประมาณ 256 MB ต่อ worker — VM 4 GB จะเข้า low-memory mode อัตโนมัติ (render ช้าลงแต่ไม่ล้ม) คลิป 20 วินาทีแบบ draft ใช้เวลาประมาณ 1–3 นาที
 
 ---
 
@@ -156,7 +185,7 @@ trainee01,ผู้อบรม คนที่หนึ่ง,203.0.113.10,trai
 
 บัตร 1 ใบ / คน ประกอบด้วย: ชื่อผู้อบรม · VM Public IP · SSH Username · Subdomain เต็ม · QR code ไปที่ README ของ repo นี้
 
-รหัสผ่าน VM และ API Key (ถ้ามี) **พิมพ์แยกใส่ซองปิด**
+รหัสผ่าน VM และ **API Key ของ GLM** **พิมพ์แยกใส่ซองปิด**
 
 ---
 
@@ -184,7 +213,7 @@ Deploy เว็บตัวอย่าง (เช่น เครื่อง�
 
 ## 7. หลังอบรม (ภายใน 1–3 วัน)
 
-- [ ] Revoke API Key ทั้งหมด / ลบ Workspace อบรม
+- [ ] Revoke API Key ของ GLM ทั้งหมด
 - [ ] ลบ Cloudflare API Token ของทีมงาน
 - [ ] ลบ DNS record ของผู้อบรม (หรือเก็บไว้ตามที่ตกลงกับหน่วยงาน)
 - [ ] ปิด / ลบ VM ทั้งหมด

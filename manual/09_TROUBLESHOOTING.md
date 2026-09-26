@@ -6,6 +6,7 @@
 
 - [SSH](#ssh)
 - [Claude Code (AI CLI)](#claude-code)
+- [HyperFrames (ตัดต่อวิดีโอ)](#hyperframes)
 - [Deploy / Nginx / Cloudflare](#deploy)
 - [อื่น ๆ](#other)
 
@@ -104,15 +105,35 @@ curl -sI https://claude.ai | head -n 1
 
 ไม่มีผลลัพธ์ → แจ้ง TA (ปัญหาเครือข่าย VM)
 
-### คัดลอกลิงก์ล็อกอินแล้วเปิดไม่ได้ / ลิงก์ขาดเป็นหลายบรรทัด
+<a id="claude-glm"></a>
 
-- ขยายหน้าต่าง Terminal ให้กว้างขึ้น แล้วกด `Esc` เริ่มล็อกอินใหม่ (ลิงก์จะไม่ถูกตัดบรรทัด)
-- ตรวจว่าคัดลอกครบตั้งแต่ `https://` จนถึงตัวอักษรสุดท้าย
-- ใช้ทางสำรอง: API Key ที่ทีมงานแจก (ดู [03_VIBE_CODING_WORKSHOP](03_VIBE_CODING_WORKSHOP.md) ขั้นที่ 2.1)
+### เชื่อม GLM ไม่ได้: `API Error`, `401`, `Invalid API key`, `authentication_error`
 
-### วางโค้ดล็อกอินแล้วขึ้น `Invalid code` / `OAuth error`
+API Key ผิดหรือวางไม่ครบ → ออกจาก Claude Code (`/exit`) แล้ว **วางบล็อกตั้งค่าในขั้นที่ 2.1 ของ [03_VIBE_CODING_WORKSHOP](03_VIBE_CODING_WORKSHOP.md) ใหม่ทั้งบล็อก** (จะเขียนทับไฟล์เดิม) ระวังเว้นวรรคหน้า-หลัง key
 
-โค้ดหมดอายุหรือคัดลอกไม่ครบ → กด `Esc` แล้วเลือกวิธีล็อกอินใหม่ เอาลิงก์ใหม่ไปเปิด (โค้ดใช้ได้ครั้งเดียว)
+ตรวจว่าไฟล์ตั้งค่าถูกต้อง (ไม่แสดง key):
+
+```bash
+python3 -m json.tool ~/.claude/settings.json > /dev/null && echo "ไฟล์ถูกรูปแบบ" ; grep -o '"ANTHROPIC_BASE_URL": "[^"]*"' ~/.claude/settings.json
+```
+
+### Claude Code ขึ้นหน้าเลือกวิธีล็อกอิน (Select login method) ทั้งที่ตั้งค่า GLM แล้ว
+
+ไฟล์ `~/.claude/settings.json` ไม่มีหรือเขียนผิด → กด `Ctrl + C` สองครั้ง แล้ววางบล็อกตั้งค่าในขั้นที่ 2.1 ใหม่
+
+### ส่งคำสั่งแล้วค้างนาน / `Connection error` / `timeout`
+
+VM ติดต่อ GLM ไม่ได้ ทดสอบ (ทีมงานจะแจ้งที่อยู่ GLM):
+
+```bash
+curl -sI https://your-glm-endpoint | head -n 1
+```
+
+ไม่มีผลลัพธ์ → แจ้ง TA (ปัญหาเครือข่าย หรือ GLM ล่ม)
+
+### ขึ้น `model not found` / `unknown model`
+
+ชื่อโมเดลในไฟล์ตั้งค่าไม่ตรงกับที่ GLM มี → แจ้ง TA ให้ตรวจชื่อโมเดล
 
 ### AI บอกว่า `sudo: a password is required` หรือ `sudo: a terminal is required`
 
@@ -133,6 +154,70 @@ User ของ VM ยังไม่ได้ตั้ง sudo แบบไม�
 ### เผลอกด No แล้ว AI หยุด
 
 พิมพ์บอกต่อได้เลย เช่น `ทำขั้นตอนเดิมต่อได้เลย ฉันอนุญาต`
+
+---
+
+<a id="hyperframes"></a>
+
+## 🎬 HyperFrames (ตัดต่อวิดีโอ)
+
+### `hyperframes: command not found`
+
+ยังไม่ได้ติดตั้งแบบ global → ใช้ `npx hyperframes` แทน `hyperframes` ได้ทุกคำสั่ง เช่น `npx hyperframes doctor` (ครั้งแรกจะดาวน์โหลดประมาณ 1 นาที) และแจ้ง TA
+
+### `hyperframes doctor` ขึ้น `✗` ที่ FFmpeg / Chrome / Node.js
+
+| แถวที่ `✗` | แก้ |
+|---|---|
+| FFmpeg | `sudo apt-get install -y ffmpeg` |
+| Chrome | `hyperframes browser ensure` |
+| Node.js ต่ำกว่า 22 | แจ้ง TA (ต้องติดตั้ง Node.js 22 ใหม่) |
+
+### เปิด `http://localhost:3002` ไม่ขึ้น
+
+1. หน้าต่าง SSH ที่มี `-L 3002:localhost:3002` ยังเปิดอยู่ไหม — ถ้าปิดไปแล้ว SSH ใหม่ด้วยคำสั่งในขั้นที่ 1 ของ [04_MEDIA_WORKSHOP](04_MEDIA_WORKSHOP.md)
+2. Preview บน VM รันอยู่ไหม — บน VM ในโฟลเดอร์ `~/myvideo` วาง:
+
+```bash
+cd ~/myvideo && hyperframes preview --background --port 3002
+```
+
+### ตอน SSH ขึ้น `bind [127.0.0.1]:3002: Address already in use`
+
+เครื่องเราใช้ port 3002 อยู่แล้ว (เช่นเปิด SSH หลายหน้าต่าง) → ปิดหน้าต่าง SSH อื่นก่อน หรือใช้ port อื่นบนเครื่องเรา แล้วเปิด `http://localhost:3003` แทน:
+
+```bash
+ssh -L 3003:localhost:3002 trainee01@203.0.113.10
+```
+
+### ตัวหนังสือภาษาไทยในวิดีโอเป็นสี่เหลี่ยม □□□
+
+VM ไม่มีฟอนต์ไทย → แจ้ง TA หรือติดตั้งเอง แล้ว render ใหม่:
+
+```bash
+sudo apt-get install -y fonts-thai-tlwg fonts-noto-core
+```
+
+### Render ช้ามาก / ล้ม / ขึ้น `Killed` หรือ out of memory
+
+บอก AI ว่า:
+
+```text
+render ใหม่แบบ draft โดยใช้ --workers 1 --low-memory-mode
+```
+
+ถ้าคลิปยาวเกิน 30 วินาที ให้สั่งตัดให้สั้นลงก่อน
+
+### AI ไม่ใช้ HyperFrames / เขียนวิดีโอแบบอื่น
+
+skill ยังไม่ได้ติดตั้ง หรือ AI ไม่ได้เรียกใช้:
+
+1. ออกจาก Claude Code (`/exit`) → `cd ~ && hyperframes skills update` → เปิด `claude` ใหม่ในโฟลเดอร์ `~/myvideo`
+2. ขึ้นต้น prompt ด้วย `/hyperframes` เสมอ
+
+### ดาวน์โหลดด้วย `scp` ขึ้น `No such file or directory`
+
+ยัง render ไม่เสร็จ หรือชื่อไฟล์ต่าง → บน VM ตรวจด้วย `ls -lh ~/myvideo/renders/` แล้วแก้ชื่อไฟล์ในคำสั่ง `scp` ให้ตรง
 
 ---
 

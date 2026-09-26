@@ -15,8 +15,9 @@
 |---|---|
 | ลงทะเบียน | `ssh -V` ขึ้นเวอร์ชัน |
 | เบรกเช้า | SSH เข้า VM ได้ + `sudo: OK` |
-| Module 2 ขั้นที่ 2 | `claude --version` ขึ้นเวอร์ชัน + ล็อกอินสำเร็จ |
+| Module 2 ขั้นที่ 2 | `claude --version` ขึ้นเวอร์ชัน + AI ตอบคำถามทดสอบเป็นภาษาไทย (เชื่อม GLM สำเร็จ) |
 | Module 2 จบ | `ls ~/myapp` มี `index.html` |
+| Module 3B | เปิด `http://localhost:3002` เห็น Studio + มี `~/myvideo/renders/promo.mp4` |
 | Deploy ขั้นที่ 1 | เปิด `http://<IP>` จากเบราว์เซอร์เห็นเว็บ |
 | Deploy จบ | เปิด `https://<subdomain>.<โดเมน>` เห็นเว็บ 🔒 |
 
@@ -26,7 +27,9 @@
 echo "== user/host =="; whoami; hostname
 echo "== sudo =="; sudo -n true && echo OK || echo "ต้องใส่รหัส (ต้องแก้)"
 echo "== claude =="; command -v claude && claude --version || echo "ไม่พบ claude"
+echo "== glm settings =="; test -f ~/.claude/settings.json && grep -o '"ANTHROPIC_BASE_URL": "[^"]*"' ~/.claude/settings.json || echo "ยังไม่ได้ตั้งค่า GLM"
 echo "== myapp =="; ls -la ~/myapp 2>/dev/null || echo "ไม่มีโฟลเดอร์ ~/myapp"
+echo "== myvideo =="; ls -la ~/myvideo/renders 2>/dev/null || echo "ยังไม่มีวิดีโอ"
 echo "== port 8080 =="; curl -s -o /dev/null -w '%{http_code}\n' --max-time 3 http://localhost:8080
 echo "== nginx =="; systemctl is-active nginx 2>/dev/null || echo "ยังไม่ติดตั้ง"
 echo "== port 80 =="; curl -s -o /dev/null -w '%{http_code}\n' --max-time 3 http://localhost
@@ -41,7 +44,10 @@ echo "== ufw =="; sudo ufw status 2>/dev/null | head -n 1
 | วางคำสั่งแล้ว `'ssh' is not recognized` | Windows ไม่มี OpenSSH | ดู troubleshooting หรือให้ใช้เครื่องสำรอง |
 | วางคำสั่ง Linux ลงใน PowerShell ของเครื่องตัวเอง | ยังไม่ได้ SSH | ดูหน้าเคอร์เซอร์ → SSH ก่อน |
 | `claude: command not found` | PATH ยังไม่โหลด | `source ~/.bashrc` |
-| ลิงก์ล็อกอินขาด | หน้าต่าง Terminal แคบ | ขยายหน้าต่าง แล้วเริ่มล็อกอินใหม่ / ใช้ API Key สำรอง |
+| AI ตอบ `401` / `Invalid API key` | วาง key ไม่ครบ / มีเว้นวรรค | วางบล็อกตั้งค่า GLM ในคู่มือ 03 ขั้นที่ 2.1 ใหม่ |
+| ขึ้นหน้าเลือกวิธีล็อกอิน | ไม่มี `~/.claude/settings.json` | วางบล็อกตั้งค่า GLM ใหม่ |
+| `localhost:3002` ไม่ขึ้น | SSH ไม่ได้ใส่ `-L` / preview ไม่รัน | SSH ใหม่ด้วย `-L 3002:localhost:3002` / `hyperframes preview --background --port 3002` ใน `~/myvideo` |
+| ตัวไทยในวิดีโอเป็น □□□ | ไม่มีฟอนต์ไทย | `sudo apt-get install -y fonts-thai-tlwg fonts-noto-core` แล้ว render ใหม่ |
 | AI ขอ sudo แล้วค้าง/ล้มเหลว | ไม่ได้ตั้ง NOPASSWD | `echo "$USER ALL=(ALL) NOPASSWD:ALL" \| sudo tee /etc/sudoers.d/90-training-$USER` (ใส่รหัสผู้อบรม) |
 | AI สร้างไฟล์ผิดโฟลเดอร์ | เปิด `claude` นอก `~/myapp` | ย้ายไฟล์: `mv ~/index.html ~/myapp/` |
 | เว็บขึ้น "Welcome to nginx!" | config default ยังเปิด | ดู troubleshooting หัวข้อ Deploy |

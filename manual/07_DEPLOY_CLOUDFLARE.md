@@ -36,7 +36,7 @@ flowchart LR
 ### 1.1 เข้า VM และเปิด Claude Code ต่อจากเมื่อเช้า
 
 ```bash
-ssh trainee01@203.0.113.10
+ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@203.0.113.10
 ```
 
 ```bash

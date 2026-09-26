@@ -7,9 +7,12 @@
 #
 # สิ่งที่ทำ:
 #   1. ติดตั้งเครื่องมือพื้นฐาน (curl, git, python3)
-#   2. สร้าง user + รหัสผ่าน + sudo แบบไม่ต้องใส่รหัส (Claude Code ต้องใช้)
-#   3. เปิด SSH แบบใช้รหัสผ่าน
-#   4. ตั้ง hostname เป็น training-vm-<username>
+#   2. ติดตั้งเครื่องมือทำวิดีโอ: Node.js 22, FFmpeg, Google Chrome, ฟอนต์ไทย, HyperFrames CLI
+#   3. สร้าง user + รหัสผ่าน + sudo แบบไม่ต้องใส่รหัส (Claude Code ต้องใช้)
+#   4. เปิด SSH แบบใช้รหัสผ่าน
+#   5. ตั้ง hostname เป็น training-vm-<username>
+#   6. สร้าง /opt/training/media สำหรับคลิปตัวอย่าง (Workshop 3B)
+#   7. clone repo คู่มือไว้ที่ ~/training ของผู้อบรม (ไฟล์ตัวอย่างอยู่ใน ~/training/manual/samples)
 # ไม่ติดตั้ง Claude Code และ nginx — ผู้อบรมทำเองใน Workshop
 set -euo pipefail
 
@@ -33,12 +36,29 @@ if [[ -z "$PASSWORD" ]]; then
   echo
 fi
 
-echo "==> [1/4] ติดตั้งแพ็กเกจพื้นฐาน"
+echo "==> [1/6] ติดตั้งแพ็กเกจพื้นฐาน + FFmpeg + ฟอนต์ไทย"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get install -y curl git python3 ca-certificates
+apt-get install -y curl git python3 ca-certificates ffmpeg qrencode \
+  fonts-thai-tlwg fonts-noto-core fonts-noto-color-emoji
 
-echo "==> [2/4] สร้าง user $USERNAME"
+echo "==> [2/6] ติดตั้ง Node.js 22, Google Chrome และ HyperFrames CLI"
+if ! command -v node >/dev/null || [[ "$(node -p 'process.versions.node.split(".")[0]')" -lt 22 ]]; then
+  curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  apt-get install -y nodejs
+fi
+if [[ "$(dpkg --print-architecture)" == "amd64" ]]; then
+  if ! command -v google-chrome >/dev/null; then
+    curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    apt-get install -y /tmp/google-chrome.deb
+    rm -f /tmp/google-chrome.deb
+  fi
+else
+  echo "⚠️  เครื่องไม่ใช่ amd64 — ข้าม Google Chrome ให้ผู้อบรมรัน 'hyperframes browser ensure' แทน"
+fi
+npm install -g hyperframes
+
+echo "==> [3/6] สร้าง user $USERNAME"
 if ! id "$USERNAME" &>/dev/null; then
   useradd -m -s /bin/bash "$USERNAME"
 fi
@@ -51,7 +71,7 @@ echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > "$SUDOERS_FILE"
 chmod 440 "$SUDOERS_FILE"
 visudo -cf "$SUDOERS_FILE" >/dev/null
 
-echo "==> [3/4] เปิด SSH แบบใช้รหัสผ่าน"
+echo "==> [4/6] เปิด SSH แบบใช้รหัสผ่าน"
 # ใช้ชื่อไฟล์ 01- เพื่อให้ถูกอ่านก่อน 50-cloud-init.conf (sshd ใช้ค่าที่เจอก่อน)
 cat > /etc/ssh/sshd_config.d/01-training.conf <<'EOF'
 PasswordAuthentication yes
@@ -61,12 +81,30 @@ EOF
 sshd -t
 systemctl reload ssh 2>/dev/null || systemctl reload sshd
 
-echo "==> [4/4] ตั้ง hostname"
+echo "==> [5/6] ตั้ง hostname"
 NEW_HOSTNAME="training-vm-$USERNAME"
 hostnamectl set-hostname "$NEW_HOSTNAME"
 if ! grep -q "$NEW_HOSTNAME" /etc/hosts; then
   echo "127.0.1.1 $NEW_HOSTNAME" >> /etc/hosts
 fi
+
+echo "==> [6/6] เตรียมโฟลเดอร์คลิปตัวอย่าง /opt/training/media"
+mkdir -p /opt/training/media
+chmod 755 /opt/training /opt/training/media
+if [[ -z "$(ls -A /opt/training/media)" ]]; then
+  echo "⚠️  /opt/training/media ยังว่าง — คัดลอกคลิปตัวอย่าง (clip1.mp4, clip2.mp4, ...) เข้ามาก่อนวันอบรม"
+fi
+
+echo "==> คัดลอกคู่มือและไฟล์ตัวอย่างไว้ที่ ~/training ของผู้อบรม"
+REPO_URL="${REPO_URL:-https://github.com/Krit03W/ai-vibe-training.git}"
+if [[ ! -d "/home/$USERNAME/training/.git" ]]; then
+  sudo -u "$USERNAME" -H git clone --depth 1 "$REPO_URL" "/home/$USERNAME/training"
+else
+  sudo -u "$USERNAME" -H git -C "/home/$USERNAME/training" pull --ff-only || true
+fi
+
+echo "==> ตรวจเครื่องมือทำวิดีโอ (ในนามผู้อบรม)"
+sudo -u "$USERNAME" -H hyperframes doctor || true
 
 echo
 echo "เสร็จแล้ว ✅  ทดสอบจากเครื่องอื่นด้วย:  ssh $USERNAME@<IP ของเครื่องนี้>"

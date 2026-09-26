@@ -8,7 +8,9 @@
 
 | ทำอะไร | คำสั่ง | พิมพ์ที่ |
 |---|---|---|
-| เข้า VM | `ssh trainee01@203.0.113.10` | เครื่องตัวเอง |
+| เข้า VM (แบบธรรมดา) | `ssh trainee01@203.0.113.10` | เครื่องตัวเอง |
+| เข้า VM แบบเปิดท่อ (ใช้ตั้งแต่ Module 2) | `ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@203.0.113.10` | เครื่องตัวเอง |
+| ดูเว็บทดสอบ / Studio วิดีโอ | `http://localhost:8080` / `http://localhost:3002` | เบราว์เซอร์เครื่องตัวเอง |
 | ออกจาก VM | `exit` | VM |
 | ตรวจว่าอยู่เครื่องไหน | ดูหน้าเคอร์เซอร์: `trainee01@...:~$` = VM | — |
 
@@ -31,12 +33,25 @@
 | ทำอะไร | คำสั่ง |
 |---|---|
 | ติดตั้ง | `curl -fsSL https://claude.ai/install.sh \| bash` |
+| เชื่อมกับ AI GLM | วางบล็อกตั้งค่าในคู่มือ 03 ขั้นที่ 2.1 (สร้าง `~/.claude/settings.json`) |
 | เปิด (ในโฟลเดอร์งาน) | `cd ~/myapp && claude` |
 | เปิดแล้วคุยต่อจากเดิม | `cd ~/myapp && claude --continue` |
 | รันคำสั่งเองในหน้า Claude | `!คำสั่ง` เช่น `!ls` |
 | หยุด AI กลางคัน | `Esc` |
 | ล้างบทสนทนา | `/clear` |
 | ออก | `/exit` |
+
+## 🎬 ตัดต่อวิดีโอด้วย HyperFrames (Module 3)
+
+| ทำอะไร | คำสั่ง | พิมพ์ที่ |
+|---|---|---|
+| ตรวจเครื่องพร้อมไหม | `hyperframes doctor` | VM |
+| ติดตั้ง skill ให้ AI | `cd ~ && hyperframes skills update` | VM |
+| เตรียมโฟลเดอร์ + คลิป | `mkdir -p ~/myvideo/assets && cp /opt/training/media/* ~/myvideo/assets/` | VM |
+| สั่ง AI | `cd ~/myvideo && claude` แล้วขึ้นต้น prompt ด้วย `/hyperframes` | VM |
+| ดูตัวอย่าง | เปิด `http://localhost:3002` | เบราว์เซอร์เครื่องตัวเอง |
+| render เอง | `hyperframes render --quality draft -o renders/promo.mp4` | VM (ใน `~/myvideo`) |
+| ดาวน์โหลดคลิป | `scp trainee01@203.0.113.10:~/myvideo/renders/promo.mp4 .` | เครื่องตัวเอง |
 
 ## 🌐 Deploy
 
