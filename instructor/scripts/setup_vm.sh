@@ -7,13 +7,13 @@
 #
 # สิ่งที่ทำ:
 #   1. ติดตั้งเครื่องมือพื้นฐาน (curl, git, python3)
-#   2. ติดตั้งเครื่องมือทำวิดีโอ: Node.js 22, FFmpeg, Google Chrome, ฟอนต์ไทย, HyperFrames CLI
+#   2. (ไม่ติดตั้ง FFmpeg / Chrome / Node.js / HyperFrames — ผู้อบรมติดตั้งเองใน Workshop 3B)
 #   3. สร้าง user + รหัสผ่าน + sudo แบบไม่ต้องใส่รหัส (Claude Code ต้องใช้)
 #   4. เปิด SSH แบบใช้รหัสผ่าน
 #   5. ตั้ง hostname เป็น training-vm-<username>
 #   6. สร้าง /opt/training/media สำหรับคลิปตัวอย่าง (Workshop 3B)
 #   7. clone repo คู่มือไว้ที่ ~/training ของผู้อบรม (ไฟล์ตัวอย่างอยู่ใน ~/training/manual/samples)
-# ไม่ติดตั้ง Claude Code และ nginx — ผู้อบรมทำเองใน Workshop
+# ไม่ติดตั้ง Claude Code, nginx และเครื่องมือทำวิดีโอ — ผู้อบรมทำเองใน Workshop
 set -euo pipefail
 
 USERNAME="${1:-}"
@@ -36,27 +36,12 @@ if [[ -z "$PASSWORD" ]]; then
   echo
 fi
 
-echo "==> [1/6] ติดตั้งแพ็กเกจพื้นฐาน + FFmpeg + ฟอนต์ไทย"
+echo "==> [1/6] ติดตั้งแพ็กเกจพื้นฐาน"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get install -y curl git python3 ca-certificates ffmpeg qrencode \
-  fonts-thai-tlwg fonts-noto-core fonts-noto-color-emoji
+apt-get install -y curl git python3 ca-certificates qrencode
 
-echo "==> [2/6] ติดตั้ง Node.js 22, Google Chrome และ HyperFrames CLI"
-if ! command -v node >/dev/null || [[ "$(node -p 'process.versions.node.split(".")[0]')" -lt 22 ]]; then
-  curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-  apt-get install -y nodejs
-fi
-if [[ "$(dpkg --print-architecture)" == "amd64" ]]; then
-  if ! command -v google-chrome >/dev/null; then
-    curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    apt-get install -y /tmp/google-chrome.deb
-    rm -f /tmp/google-chrome.deb
-  fi
-else
-  echo "⚠️  เครื่องไม่ใช่ amd64 — ข้าม Google Chrome ให้ผู้อบรมรัน 'hyperframes browser ensure' แทน"
-fi
-npm install -g hyperframes
+echo "==> [2/6] ข้าม — ผู้อบรมติดตั้ง FFmpeg / Chrome / Node.js / HyperFrames เองใน Workshop 3B"
 
 echo "==> [3/6] สร้าง user $USERNAME"
 if ! id "$USERNAME" &>/dev/null; then
@@ -102,9 +87,6 @@ if [[ ! -d "/home/$USERNAME/training/.git" ]]; then
 else
   sudo -u "$USERNAME" -H git -C "/home/$USERNAME/training" pull --ff-only || true
 fi
-
-echo "==> ตรวจเครื่องมือทำวิดีโอ (ในนามผู้อบรม)"
-sudo -u "$USERNAME" -H hyperframes doctor || true
 
 echo
 echo "เสร็จแล้ว ✅  ทดสอบจากเครื่องอื่นด้วย:  ssh $USERNAME@<IP ของเครื่องนี้>"

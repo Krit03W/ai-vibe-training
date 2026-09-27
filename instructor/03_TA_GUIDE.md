@@ -46,7 +46,7 @@ echo "== ufw =="; sudo ufw status 2>/dev/null | head -n 1
 | `claude: command not found` | PATH ยังไม่โหลด | `source ~/.bashrc` |
 | AI ตอบ `401` / `Invalid API key` | วาง key ไม่ครบ / มีเว้นวรรค | วางบล็อกตั้งค่า GLM ในคู่มือ 03 ขั้นที่ 2.1 ใหม่ |
 | ขึ้นหน้าเลือกวิธีล็อกอิน | ไม่มี `~/.claude/settings.json` | วางบล็อกตั้งค่า GLM ใหม่ |
-| `localhost:3002` ไม่ขึ้น | SSH ไม่ได้ใส่ `-L` / preview ไม่รัน | SSH ใหม่ด้วย `-L 3002:localhost:3002` / `hyperframes preview --background --port 3002` ใน `~/myvideo` |
+| `localhost:3002` ไม่ขึ้น | SSH ไม่ได้ใส่ `-L` / preview ไม่รัน | SSH ใหม่ด้วย `-L 3002:localhost:3002` / `npx hyperframes preview --background --port 3002` ใน `~/myvideo` |
 | ตัวไทยในวิดีโอเป็น □□□ | ไม่มีฟอนต์ไทย | `sudo apt-get install -y fonts-thai-tlwg fonts-noto-core` แล้ว render ใหม่ |
 | AI ขอ sudo แล้วค้าง/ล้มเหลว | ไม่ได้ตั้ง NOPASSWD | `echo "$USER ALL=(ALL) NOPASSWD:ALL" \| sudo tee /etc/sudoers.d/90-training-$USER` (ใส่รหัสผู้อบรม) |
 | AI สร้างไฟล์ผิดโฟลเดอร์ | เปิด `claude` นอก `~/myapp` | ย้ายไฟล์: `mv ~/index.html ~/myapp/` |

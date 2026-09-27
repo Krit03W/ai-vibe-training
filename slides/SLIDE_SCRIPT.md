@@ -532,8 +532,8 @@ AI มักเขียนภาษาไทยในภาพผิด → เ
 
 ### 42 · 3.5 Workshop 3B (1/2) · เตรียมและสั่งตัดต่อ (12 นาที)
 
-1. ตรวจเครื่อง: `hyperframes doctor`
-2. ติดตั้ง skill: `cd ~ && hyperframes skills update`
+1. ติดตั้งเอง: วางคำสั่ง 3 บล็อกจากคู่มือ 04 (FFmpeg + Chrome + Node.js)
+2. ตรวจเครื่อง `npx hyperframes doctor` + ติดตั้ง skill
 3. คัดลอกคลิปตัวอย่างเข้า `~/myvideo/assets`
 4. `cd ~/myvideo && claude` → วาง prompt ที่ขึ้นต้นด้วย `/hyperframes`
 

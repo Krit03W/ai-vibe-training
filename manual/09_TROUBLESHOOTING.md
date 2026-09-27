@@ -161,17 +161,23 @@ User ของ VM ยังไม่ได้ตั้ง sudo แบบไม�
 
 ## 🎬 HyperFrames (ตัดต่อวิดีโอ)
 
-### `hyperframes: command not found`
+### `npx: command not found` หรือ `node: command not found`
 
-ยังไม่ได้ติดตั้งแบบ global → ใช้ `npx hyperframes` แทน `hyperframes` ได้ทุกคำสั่ง เช่น `npx hyperframes doctor` (ครั้งแรกจะดาวน์โหลดประมาณ 1 นาที) และแจ้ง TA
+Node.js ยังไม่ได้ติดตั้ง → วาง **บล็อก 1** ในขั้นที่ 2 ของ [04_MEDIA_WORKSHOP](04_MEDIA_WORKSHOP.md) ใหม่อีกครั้ง
 
-### `hyperframes doctor` ขึ้น `✗` ที่ FFmpeg / Chrome / Node.js
+### `npx hyperframes doctor` ขึ้น `✗` ที่ FFmpeg / Chrome / Node.js
 
 | แถวที่ `✗` | แก้ |
 |---|---|
-| FFmpeg | `sudo apt-get install -y ffmpeg` |
-| Chrome | `hyperframes browser ensure` |
-| Node.js ต่ำกว่า 22 | แจ้ง TA (ต้องติดตั้ง Node.js 22 ใหม่) |
+| FFmpeg / FFprobe | `sudo apt-get install -y ffmpeg` |
+| Chrome | `curl -fsSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo apt-get install -y /tmp/chrome.deb` |
+| Node.js ต่ำกว่า 22 | `curl -fsSL https://deb.nodesource.com/setup_22.x \| sudo -E bash - && sudo apt-get install -y nodejs` |
+
+แก้แล้วรัน `npx hyperframes doctor` ตรวจอีกครั้ง
+
+### ติดตั้งแล้วขึ้น `Could not get lock /var/lib/dpkg/lock`
+
+เครื่องกำลังอัปเดตตัวเองอยู่เบื้องหลัง → รอ 1–2 นาที แล้ววางบล็อกเดิมใหม่
 
 ### เปิด `http://localhost:3002` ไม่ขึ้น
 
@@ -179,7 +185,7 @@ User ของ VM ยังไม่ได้ตั้ง sudo แบบไม�
 2. Preview บน VM รันอยู่ไหม — บน VM ในโฟลเดอร์ `~/myvideo` วาง:
 
 ```bash
-cd ~/myvideo && hyperframes preview --background --port 3002
+cd ~/myvideo && npx hyperframes preview --background --port 3002
 ```
 
 ### ตอน SSH ขึ้น `bind [127.0.0.1]:3002: Address already in use`
@@ -212,7 +218,7 @@ render ใหม่แบบ draft โดยใช้ --workers 1 --low-memory-m
 
 skill ยังไม่ได้ติดตั้ง หรือ AI ไม่ได้เรียกใช้:
 
-1. ออกจาก Claude Code (`/exit`) → `cd ~ && hyperframes skills update` → เปิด `claude` ใหม่ในโฟลเดอร์ `~/myvideo`
+1. ออกจาก Claude Code (`/exit`) → `cd ~ && npx hyperframes skills update` → เปิด `claude` ใหม่ในโฟลเดอร์ `~/myvideo`
 2. ขึ้นต้น prompt ด้วย `/hyperframes` เสมอ
 
 ### ดาวน์โหลดด้วย `scp` ขึ้น `No such file or directory`

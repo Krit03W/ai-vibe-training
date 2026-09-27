@@ -46,10 +46,9 @@ sudo bash setup_vm.sh trainee01 'รหัสผ่านของผู้อ�
 
 1. สร้าง user พร้อมรหัสผ่าน และเปิด SSH แบบใช้รหัสผ่าน
 2. ให้สิทธิ์ `sudo` **แบบไม่ต้องใส่รหัสผ่าน (NOPASSWD)** — ⚠️ **จำเป็น** เพราะ Claude Code รันคำสั่งแบบไม่มี terminal ให้กรอกรหัส ถ้าไม่ตั้ง AI จะติดตั้ง nginx ไม่ได้
-3. ติดตั้ง `curl`, `git`, `python3`, **FFmpeg**, **Node.js 22**, **Google Chrome**, **ฟอนต์ไทย** (`fonts-thai-tlwg`, `fonts-noto-core`) และ **HyperFrames CLI** (`npm install -g hyperframes`) สำหรับ Workshop 3B
+3. ติดตั้ง `curl`, `git`, `python3`, `qrencode` เท่านั้น — **ไม่ติดตั้ง** FFmpeg / Chrome / Node.js / HyperFrames เพราะผู้อบรมติดตั้งเองใน Workshop 3B
 4. ตั้ง hostname เป็น `training-vm-<ชื่อผู้ใช้>` (ช่วยให้ TA ดูหน้าจอแล้วรู้ว่าเครื่องใคร)
 5. สร้างโฟลเดอร์ `/opt/training/media` สำหรับคลิปตัวอย่าง (ต้องคัดลอกคลิปเข้าไปเอง — ดูหัวข้อ 2.2)
-6. รัน `hyperframes doctor` ในนามผู้อบรมเพื่อตรวจความพร้อม
 7. **ไม่** ติดตั้ง Claude Code และ **ไม่** ติดตั้ง nginx (ให้ผู้อบรมทำเองใน Workshop)
 
 ### ตรวจทุกเครื่องก่อนวันจริง
@@ -100,7 +99,9 @@ grep -rl 'your-glm-endpoint\|your-glm-model' README.md manual instructor slides 
 
 ### 2.2 HyperFrames (Workshop 3B ตัดต่อวิดีโอ)
 
-`setup_vm.sh` ติดตั้ง Node.js 22, FFmpeg, Chrome, ฟอนต์ไทย และ HyperFrames CLI ให้แล้ว ที่ต้องทำเพิ่ม:
+ผู้อบรม **ติดตั้ง HyperFrames เอง** ด้วยคำสั่ง 3 บล็อกในคู่มือ 04 ขั้นที่ 2 (ต้องมี sudo แบบไม่ใส่รหัส + VM ออกอินเทอร์เน็ตได้ และต้องเป็นเครื่อง **amd64** เพราะใช้ Google Chrome แบบ .deb) ที่ทีมงานต้องทำเพิ่ม:
+
+0. เพิ่ม disk ให้ VM อย่างน้อย **20 GB** (FFmpeg + Chrome + Node.js + cache ใช้ราว 1.5 GB)
 
 1. **คลิปตัวอย่าง 3–4 คลิป** (ความยาวคลิปละ 5–10 วินาที, MP4 H.264, 1080p หรือต่ำกว่า) — ใช้คลิปที่ **หน่วยงานเป็นเจ้าของ** หรือคลิปฟรีที่อนุญาตให้ใช้ (เช่น Pexels / Pixabay) เนื้อหาเกี่ยวกับการทำงาน / สัมภาษณ์งาน / บูธรับสมัคร **ไม่มีใบหน้าบุคคลที่ไม่ได้ให้อนุญาต**
 2. ตั้งชื่อ `clip1.mp4`, `clip2.mp4`, `clip3.mp4` แล้วคัดลอกไปทุก VM:

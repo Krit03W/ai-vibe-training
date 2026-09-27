@@ -45,12 +45,13 @@
 
 | ทำอะไร | คำสั่ง | พิมพ์ที่ |
 |---|---|---|
-| ตรวจเครื่องพร้อมไหม | `hyperframes doctor` | VM |
-| ติดตั้ง skill ให้ AI | `cd ~ && hyperframes skills update` | VM |
-| เตรียมโฟลเดอร์ + คลิป | `mkdir -p ~/myvideo/assets && cp /opt/training/media/* ~/myvideo/assets/` | VM |
+| ติดตั้งโปรแกรมเบื้องหลัง | วางบล็อก 1 ในคู่มือ 04 ขั้นที่ 2 | VM |
+| ตรวจเครื่องพร้อมไหม | `npx -y hyperframes@latest doctor` | VM |
+| ติดตั้ง skill ให้ AI | `cd ~ && npx hyperframes skills update` | VM |
+| เตรียมโฟลเดอร์ + คลิป | `mkdir -p ~/myvideo/assets && cp /opt/training/media/* ~/myvideo/assets/` (ไม่มีคลิป → ใช้ prompt แบบ B) | VM |
 | สั่ง AI | `cd ~/myvideo && claude` แล้วขึ้นต้น prompt ด้วย `/hyperframes` | VM |
 | ดูตัวอย่าง | เปิด `http://localhost:3002` | เบราว์เซอร์เครื่องตัวเอง |
-| render เอง | `hyperframes render --quality draft -o renders/promo.mp4` | VM (ใน `~/myvideo`) |
+| render เอง | `npx hyperframes render --quality draft -o renders/promo.mp4` | VM (ใน `~/myvideo`) |
 | ดาวน์โหลดคลิป | `scp trainee01@203.0.113.10:~/myvideo/renders/promo.mp4 .` | เครื่องตัวเอง |
 
 ## 🌐 Deploy

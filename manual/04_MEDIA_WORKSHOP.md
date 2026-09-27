@@ -1,6 +1,6 @@
 # 04 — Module 3: การใช้ AI ในการผลิตสื่อ (Workshop 3)
 
-**เวลา:** 11.20–12.00 น. (40 นาที) · **Workshop 3A โปสเตอร์:** 10 นาที (เว็บ AI) · **Workshop 3B วิดีโอ:** 20 นาที (VM + Claude Code + HyperFrames)
+**เวลา:** 11.20–12.00 น. (40 นาที) · **Workshop 3A โปสเตอร์:** 10 นาที (เว็บ AI) · **Workshop 3B วิดีโอ:** 20 นาที (VM + Claude Code + HyperFrames — ติดตั้งเอง)
 
 ## สิ่งที่ต้องรู้ก่อน
 
@@ -158,39 +158,90 @@ ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@203.0.113.10
 
 ✅ เข้า VM ได้ตามปกติ (`trainee01@...:~$`) — **เปิดหน้าต่างนี้ค้างไว้ตลอด Workshop** ถ้าปิด ท่อจะหายไปด้วย
 
-### ขั้นที่ 2 — ตรวจเครื่องมือ + ติดตั้ง Skill ของ HyperFrames (3 นาที)
+### ขั้นที่ 2 — ติดตั้ง HyperFrames ด้วยตัวเอง (5 นาที)
 
-ทีมงานติดตั้ง HyperFrames, FFmpeg, Chrome และฟอนต์ไทยไว้ให้แล้ว ตรวจด้วย:
+HyperFrames ต้องใช้โปรแกรมเบื้องหลัง 3 ตัว ติดตั้งครั้งเดียวด้วยการวาง **3 บล็อก** นี้ทีละบล็อก
+
+| โปรแกรม | ใช้ทำอะไร |
+|---|---|
+| **FFmpeg** | ต่อภาพแต่ละเฟรมให้เป็นไฟล์วิดีโอ MP4 |
+| **Chrome** | "วาด" หน้าเว็บวิดีโอออกมาเป็นภาพทีละเฟรม |
+| **Node.js** | ใช้รันโปรแกรม HyperFrames |
+
+**บล็อก 1 — ติดตั้งโปรแกรมเบื้องหลัง** (ใช้เวลา 2–4 นาที ระหว่างรอจะมีข้อความวิ่งเยอะ เป็นเรื่องปกติ)
 
 ```bash
-# ตรวจว่าเครื่องพร้อมตัดต่อวิดีโอ
-hyperframes doctor
+# ติดตั้ง FFmpeg + ฟอนต์ไทย + Node.js 22 + Chrome (ถ้ามีอยู่แล้วจะข้ามให้เอง)
+sudo apt-get update -y
+sudo apt-get install -y ffmpeg fonts-thai-tlwg fonts-noto-core
+node -v 2>/dev/null | grep -qE '^v(2[2-9]|[3-9][0-9])' || { curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs; }
+command -v google-chrome >/dev/null || { curl -fsSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo apt-get install -y /tmp/chrome.deb; }
+echo "ติดตั้งเสร็จแล้ว ✅"
 ```
 
-✅ **ผลที่ควรเห็น:** มีเครื่องหมาย `✓` ที่แถว **Node.js**, **FFmpeg**, **FFprobe** และ **Chrome** (แถว Docker เป็น `✗` ได้ ไม่ต้องใช้)
+✅ **ผลที่ควรเห็น:** บรรทัดสุดท้ายขึ้น `ติดตั้งเสร็จแล้ว ✅`
 
-ติดตั้ง Skill ให้ Claude Code รู้จักวิธีทำวิดีโอด้วย HyperFrames:
+**บล็อก 2 — ตรวจว่าเครื่องพร้อม** (ครั้งแรกจะดาวน์โหลด HyperFrames ประมาณ 30 วินาที)
 
 ```bash
-# ติดตั้ง skill ชุดหลักของ HyperFrames (ใช้เวลาประมาณ 30 วินาที)
-cd ~ && hyperframes skills update
+# ใช้ npx เรียก HyperFrames ได้เลย ไม่ต้องติดตั้งแยก
+npx -y hyperframes@latest doctor
 ```
 
+✅ **ผลที่ควรเห็น:** เครื่องหมาย `✓` ที่แถว **Node.js**, **FFmpeg**, **FFprobe** และ **Chrome** (แถว Docker / Whisper / TTS เป็น `✗` ได้ ไม่ต้องใช้)
+
+**บล็อก 3 — ติดตั้ง Skill ให้ Claude Code รู้วิธีทำวิดีโอ**
+
 ```bash
-# ตรวจว่ามี skill อะไรบ้าง
-hyperframes skills check
+# ติดตั้ง skill ชุดหลักของ HyperFrames แล้วตรวจรายชื่อ
+cd ~ && npx hyperframes skills update && npx hyperframes skills check
 ```
 
 ✅ **ผลที่ควรเห็น:** รายชื่อ skill มี `hyperframes` และ `hyperframes-core`
 
+**บล็อก 4 (ไม่บังคับ) — ทดสอบ render คลิปภาษาไทย 2 วินาที**
+
+```bash
+# สร้างโปรเจกต์ทดสอบ ใส่ข้อความไทย แล้ว render เป็น MP4
+mkdir -p ~/hf-test && cd ~/hf-test
+npx hyperframes init t --non-interactive && cd t
+sed -i 's|>Title</h1>|>งานนัดพบแรงงาน 2569</h1>|; s|data-duration="10"|data-duration="2"|g' index.html
+npx hyperframes render --quality draft -o renders/test.mp4 && ls -lh renders/
+```
+
+✅ **ผลที่ควรเห็น:** มีไฟล์ `renders/test.mp4` — ดาวน์โหลดลงเครื่องตัวเองด้วย `scp` (ดูขั้นที่ 7) แล้วเปิดดูว่าตัวหนังสือไทยไม่เป็น □□□
+
+> ⚠️ **ข้อควรรู้**
+> - VM ต้องเป็นเครื่อง **amd64** (Chrome แบบ `.deb` มีเฉพาะ amd64) มีสิทธิ์ `sudo` และออกอินเทอร์เน็ตได้
+> - ใช้พื้นที่ดิสก์ประมาณ 1.5 GB
+> - ขึ้น `Could not get lock /var/lib/dpkg/lock` = เครื่องกำลังอัปเดตตัวเอง → รอ 1–2 นาที แล้ววางบล็อกเดิมใหม่
+
+> 💡 **อยากลองแบบ Vibe Coding?** เปิด `claude` แล้วสั่งว่า `ติดตั้ง HyperFrames ให้พร้อมใช้ตามเอกสาร https://hyperframes.heygen.com แล้วรัน doctor ให้ดูว่าครบไหม` AI จะติดตั้งให้เอง — แต่ถ้าเวลาน้อย ใช้ 3 บล็อกด้านบนจะเร็วและแน่นอนกว่า
+
 ### ขั้นที่ 3 — เตรียมโฟลเดอร์และคลิปวัตถุดิบ (1 นาที)
 
 ```bash
-# สร้างโฟลเดอร์งานวิดีโอ และคัดลอกคลิปตัวอย่างที่ทีมงานเตรียมไว้มาใช้
-mkdir -p ~/myvideo/assets && cp /opt/training/media/* ~/myvideo/assets/ && cd ~/myvideo && ls -lh assets
+# สร้างโฟลเดอร์งานวิดีโอ แล้วคัดลอกคลิปตัวอย่างที่ทีมงานเตรียมไว้ (ถ้ามี)
+mkdir -p ~/myvideo/assets && cd ~/myvideo
+cp /opt/training/media/* assets/ 2>/dev/null && ls -lh assets || echo "ไม่พบคลิปตัวอย่าง → ใช้ prompt แบบ B ในขั้นที่ 4 (ไม่ต้องใช้คลิป)"
 ```
 
 ✅ **ผลที่ควรเห็น:** รายชื่อคลิปตัวอย่าง เช่น `clip1.mp4`, `clip2.mp4`, `clip3.mp4`
+
+ถ้าขึ้น `ไม่พบคลิปตัวอย่าง` เลือกทางใดทางหนึ่ง:
+
+- **ทางที่ 1:** ข้ามไปใช้ **prompt แบบ B** ในขั้นที่ 4 (AI สร้างภาพเคลื่อนไหวจากข้อความล้วน ไม่ต้องใช้คลิป)
+- **ทางที่ 2:** อัปโหลดคลิปของตัวเอง (ดูกล่องด้านล่าง)
+- **ทางที่ 3 (สำหรับทดสอบระบบ):** สร้างคลิปทดสอบ 3 คลิปด้วย FFmpeg แล้วใช้ prompt แบบ A ได้
+
+```bash
+# สร้างคลิปทดสอบแนวตั้ง 3 คลิป คลิปละ 5 วินาที (ภาพแถบสีและภาพเคลื่อนไหวของ FFmpeg)
+cd ~/myvideo
+ffmpeg -v error -f lavfi -i testsrc2=size=1080x1920:rate=30 -t 5 -pix_fmt yuv420p -y assets/clip1.mp4
+ffmpeg -v error -f lavfi -i mandelbrot=size=1080x1920:rate=30 -t 5 -pix_fmt yuv420p -y assets/clip2.mp4
+ffmpeg -v error -f lavfi -i "gradients=size=1080x1920:rate=30:c0=0x0B2E6B:c1=0x7CC4F2" -t 5 -pix_fmt yuv420p -y assets/clip3.mp4
+ls -lh assets
+```
 
 > 💡 **อยากใช้คลิปของตัวเอง?** เปิด Terminal **อีกหน้าต่างบนเครื่องตัวเอง** (ไม่ต้อง SSH) แล้วอัปโหลดขึ้น VM (แทนชื่อไฟล์และ IP):
 >
@@ -222,7 +273,7 @@ cd ~/myvideo && claude
 สไตล์: โทนน้ำเงินเข้มกับส้ม ดูเป็นทางการแต่สดใส ข้อความภาษาไทยใช้ฟอนต์ Noto Sans Thai ตัวหนา ตัวใหญ่อ่านง่ายบนมือถือ
 มุมล่างขวาตลอดคลิปมีข้อความเล็ก ๆ "สร้างด้วย AI"
 ไม่ต้องมีเสียงพากย์และไม่ต้องมีเพลง
-ข้อกำหนด: ใช้ค่าตามที่บอกนี้ได้เลย ไม่ต้องถามเพิ่ม ทำเสร็จให้ตรวจด้วย hyperframes lint แล้วเปิด preview แบบ background ที่ port 3002 จากนั้น render คุณภาพ draft เป็นไฟล์ renders/promo.mp4 สรุปเป็นภาษาไทยสั้น ๆ ว่าทำอะไรไปบ้าง
+ข้อกำหนด: ใช้ค่าตามที่บอกนี้ได้เลย ไม่ต้องถามเพิ่ม ทำเสร็จให้ตรวจด้วย npx hyperframes lint แล้วเปิด preview แบบ background ที่ port 3002 จากนั้น render คุณภาพ draft เป็นไฟล์ renders/promo.mp4 สรุปเป็นภาษาไทยสั้น ๆ ว่าทำอะไรไปบ้าง
 ```
 
 **แบบ B — ไม่มีคลิป ให้ AI สร้างภาพเคลื่อนไหวจากข้อความล้วน** (ใช้ถ้าโฟลเดอร์ `assets/` ว่าง)
@@ -235,7 +286,7 @@ cd ~/myvideo && claude
 - 10–15 วินาที: "เสาร์ 17 ต.ค. 2569 · 09.00–15.00 น. · ศาลากลางจังหวัด" และ "ฟรี ไม่มีค่าใช้จ่าย"
 สไตล์: โทนน้ำเงินเข้มกับส้ม ฟอนต์ Noto Sans Thai ตัวหนา มุมล่างขวามีข้อความ "สร้างด้วย AI"
 ไม่ต้องมีเสียง
-ข้อกำหนด: ใช้ค่าตามที่บอกนี้ได้เลย ไม่ต้องถามเพิ่ม ทำเสร็จให้ตรวจด้วย hyperframes lint แล้วเปิด preview แบบ background ที่ port 3002 จากนั้น render คุณภาพ draft เป็นไฟล์ renders/promo.mp4 สรุปเป็นภาษาไทยสั้น ๆ ว่าทำอะไรไปบ้าง
+ข้อกำหนด: ใช้ค่าตามที่บอกนี้ได้เลย ไม่ต้องถามเพิ่ม ทำเสร็จให้ตรวจด้วย npx hyperframes lint แล้วเปิด preview แบบ background ที่ port 3002 จากนั้น render คุณภาพ draft เป็นไฟล์ renders/promo.mp4 สรุปเป็นภาษาไทยสั้น ๆ ว่าทำอะไรไปบ้าง
 ```
 
 > ⏱️ AI จะใช้เวลาเขียนประมาณ 3–5 นาที และ render อีก 1–3 นาที — ระหว่างรอ อ่านสิ่งที่ AI ขออนุญาตแล้วกด **Yes** ตามปกติ
@@ -303,11 +354,11 @@ scp trainee01@203.0.113.10:~/myvideo/renders/promo.mp4 .
 
 | คำสั่ง | ทำอะไร |
 |---|---|
-| `hyperframes doctor` | ตรวจว่าเครื่องพร้อม (Node.js, FFmpeg, Chrome) |
-| `hyperframes lint` | ตรวจหาข้อผิดพลาดในวิดีโอ |
-| `hyperframes preview --background --port 3002` | เปิด Studio ดูตัวอย่าง |
-| `hyperframes render --quality draft -o renders/promo.mp4` | แปลงเป็นไฟล์ MP4 (draft = เร็ว, `high` = คมชัด) |
-| `hyperframes snapshot --at 0,5,10` | ถ่ายภาพนิ่งที่วินาทีต่าง ๆ ไว้ตรวจ |
+| `npx hyperframes doctor` | ตรวจว่าเครื่องพร้อม (Node.js, FFmpeg, Chrome) |
+| `npx hyperframes lint` | ตรวจหาข้อผิดพลาดในวิดีโอ |
+| `npx hyperframes preview --background --port 3002` | เปิด Studio ดูตัวอย่าง |
+| `npx hyperframes render --quality draft -o renders/promo.mp4` | แปลงเป็นไฟล์ MP4 (draft = เร็ว, `high` = คมชัด) |
+| `npx hyperframes snapshot --at 0,5,10` | ถ่ายภาพนิ่งที่วินาทีต่าง ๆ ไว้ตรวจ |
 
 ---
 
