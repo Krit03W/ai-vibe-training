@@ -278,6 +278,8 @@ http://localhost:3002
 
 ### ขั้นที่ 7 — ดาวน์โหลดคลิปมาไว้ที่เครื่องตัวเอง (1 นาที)
 
+> 📘 วิธีรับส่งไฟล์แบบอื่น (SFTP, FileZilla, rsync) ดู [linux/03_SSH_FILESYSTEM.md](linux/03_SSH_FILESYSTEM.md)
+
 ตรวจว่ามีไฟล์แล้ว (พิมพ์ใน Claude Code):
 
 ```bash

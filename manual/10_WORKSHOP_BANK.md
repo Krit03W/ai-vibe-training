@@ -262,6 +262,8 @@ mkdir -p ~/myapp/tools/dashboard && cp ~/training/manual/samples/04_visitors_sep
 
 ### ➕ 2G — จุดบันทึก + ปุ่มย้อนกลับด้วย Git (10 นาที) 🖥️
 
+> 📘 อยากเข้าใจ Git มากขึ้น ดู [linux/05_GIT.md](linux/05_GIT.md)
+
 Git คือ "ระบบบันทึกเวอร์ชัน" — แก้พังเมื่อไหร่ก็ย้อนกลับได้
 
 ```text

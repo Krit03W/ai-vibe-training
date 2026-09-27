@@ -167,4 +167,6 @@ sudo: OK
 
 > ❗ ถ้าบรรทัดสุดท้ายขึ้น `sudo: ต้องใส่รหัสผ่าน` ให้ยกมือเรียก TA — AI CLI ต้องใช้สิทธิ์นี้ตอนติดตั้ง Nginx ช่วง Deploy
 
+> 📘 **อ่านเพิ่มเติม (ไม่บังคับ):** คำสั่ง Linux อื่น ๆ ใน [linux/01_LINUX.md](linux/01_LINUX.md) · เข้า VM โดยไม่ต้องพิมพ์รหัสผ่านด้วย SSH Key ใน [linux/02_PUBLICKEY.md](linux/02_PUBLICKEY.md) · ใช้ VS Code แทน Terminal ใน [linux/04_VSCODE.md](linux/04_VSCODE.md)
+
 ➡️ ต่อไป: [03_VIBE_CODING_WORKSHOP.md](03_VIBE_CODING_WORKSHOP.md)
