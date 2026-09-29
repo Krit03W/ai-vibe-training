@@ -9,11 +9,7 @@
 
 ## เตรียมก่อนทำ Workshop บน VM (🖥️)
 
-ทุก Workshop 🖥️ เริ่มจาก SSH แบบเปิดท่อ (ดูคู่มือ [03](03_VIBE_CODING_WORKSHOP.md) ขั้นที่ 1):
-
-```bash
-ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@203.0.113.10
-```
+ทุก Workshop 🖥️ ทำใน **VS Code ที่เชื่อม VM ด้วย Remote - SSH** (ดูคู่มือ [02](02_SSH_VM.md) หัวข้อ 1) และส่งต่อ port `8080` กับ `3002` ในแท็บ **PORTS** ไว้ ใช้เปิดดูผลงานที่ `http://localhost:8080` และ `http://localhost:3002`
 
 ไฟล์ตัวอย่างทั้งหมดอยู่บน VM แล้วที่ `~/training/manual/samples` — อัปเดตเป็นล่าสุดด้วย:
 
@@ -336,11 +332,7 @@ mkdir -p ~/myapp/media && cd ~/myapp && claude
 
 ดูผล: `http://localhost:8080/media/infographic.png`
 
-ดาวน์โหลดลงเครื่อง (Terminal บนเครื่องตัวเอง):
-
-```bash
-scp trainee01@203.0.113.10:~/myapp/media/infographic.png .
-```
+ดาวน์โหลดลงเครื่อง: VS Code แถบซ้าย → `myapp/media/infographic.png` → **คลิกขวา → Download...**
 
 ✅ **ตรวจ:** ตัวเลขทุกตัวตรงกับไฟล์ต้นฉบับ
 
@@ -399,11 +391,7 @@ mkdir -p ~/myvideo-intro && cd ~/myvideo-intro && claude
 ```
 
 2. สร้างไฟล์เสียง MP3 ด้วยเครื่องมือ Text-to-Speech ที่รองรับภาษาไทย (เช่น ใน Canva) **หรืออัดเสียงตัวเองด้วยมือถือ**
-3. อัปโหลดขึ้น VM (Terminal บนเครื่องตัวเอง):
-
-```bash
-scp narration.mp3 trainee01@203.0.113.10:~/myvideo/assets/
-```
+3. อัปโหลดขึ้น VM: ลากไฟล์ `narration.mp3` จากเครื่องตัวเองไปวางในโฟลเดอร์ `myvideo/assets` ที่แถบซ้ายของ VS Code
 
 4. สั่งใน Claude Code (โฟลเดอร์ `~/myvideo`):
 
@@ -632,7 +620,7 @@ cd ~/training/manual/samples/rag && claude
 
 | รหัส | Workshop | เวลา | ที่ทำ |
 |---|---|---|---|
-| ⭐ 6A | Nginx + Subdomain + Cloudflare | 30 | 🖥️ + 🌐 |
+| ⭐ 6A | Nginx + Certbot + Cloudflare DNS | 30 | 🖥️ + 🌐 |
 | ➕ 6B | หน้าผลงานของฉันวันนี้ (เครื่องมือ + โปสเตอร์ + วิดีโอ) | 10 | 🖥️ |
 | ➕ 6C | แชร์ลิงก์ใน LINE / Facebook ให้ขึ้นภาพตัวอย่างสวย | 5 | 🖥️ |
 | ➕ 6D | QR Code ไปที่เว็บตัวเอง | 5 | 🖥️ |
@@ -668,11 +656,7 @@ cd ~/myapp && claude --continue
 แก้เสร็จให้คัดลอกไฟล์ทั้งหมดใน ~/myapp ไปทับที่ /var/www/myapp แล้วตรวจด้วย curl
 ```
 
-อัปโหลดโปสเตอร์จาก 3A (Terminal บนเครื่องตัวเอง):
-
-```bash
-scp poster.png trainee01@203.0.113.10:~/myapp/media/
-```
+อัปโหลดโปสเตอร์จาก 3A: ลากไฟล์ `poster.png` จากเครื่องตัวเองไปวางในโฟลเดอร์ `myapp/media` ที่แถบซ้ายของ VS Code
 
 เปิด `https://trainee01.your-training-domain.com/showcase.html`
 
@@ -739,4 +723,4 @@ echo "https: $(curl -s -o /dev/null -w '%{http_code}' https://$D)"
 curl -sI https://$D | grep -i "^server:"
 ```
 
-✅ **ผลที่ควรเห็น:** `nginx: active` · `local: 200` · `https: 200` · `server: cloudflare`
+✅ **ผลที่ควรเห็น:** `nginx: active` · `local: 200` (หรือ `301` ถ้า Certbot ตั้ง redirect ไป https) · `https: 200` · `server: nginx`

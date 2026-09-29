@@ -5,6 +5,7 @@
 ## สารบัญ
 
 - [SSH](#ssh)
+- [VS Code Remote - SSH](#vscode)
 - [Claude Code (AI CLI)](#claude-code)
 - [HyperFrames (ตัดต่อวิดีโอ)](#hyperframes)
 - [Deploy / Nginx / Cloudflare](#deploy)
@@ -70,6 +71,26 @@ cd ~/myapp && claude --continue
 
 ---
 
+<a id="vscode"></a>
+
+### VS Code: `Could not establish connection to "…"`
+
+- ตรวจ IP / ชื่อผู้ใช้ — กด `><` → **Connect to Host...** → **Configure SSH Hosts...** → เปิดไฟล์ config แล้วดูว่าบรรทัด `HostName` และ `User` ถูกไหม
+- ลองเข้าด้วย Terminal ธรรมดา `ssh trainee01@IP` (คู่มือ 02 หัวข้อ 2) — ถ้า Terminal ก็เข้าไม่ได้ ดูหัวข้อ SSH ด้านบน
+
+### VS Code ค้างที่ `Setting up SSH Host … (Downloading VS Code Server)`
+
+ครั้งแรก VS Code ต้องดาวน์โหลดตัวเชื่อมต่อลง VM (ประมาณ 1 นาที) ถ้านานเกิน 3 นาที:
+
+1. `Ctrl + Shift + P` → พิมพ์ `Remote-SSH: Kill VS Code Server on Host...` → เลือก IP ของตัวเอง
+2. เชื่อมต่อใหม่ — ถ้ายังไม่ได้ แจ้ง TA (VM อาจออกอินเทอร์เน็ตไม่ได้)
+
+### VS Code ถามรหัสผ่านหลายครั้ง
+
+ปกติสำหรับการเชื่อมต่อครั้งแรกและตอนเปิดโฟลเดอร์ ถ้าอยากเลิกพิมพ์รหัสผ่าน ใช้ SSH Key ตาม [linux/02_PUBLICKEY.md](linux/02_PUBLICKEY.md)
+
+---
+
 <a id="claude-code"></a>
 
 ## 🤖 Claude Code (AI CLI)
@@ -109,7 +130,13 @@ curl -sI https://claude.ai | head -n 1
 
 ### เชื่อม GLM ไม่ได้: `API Error`, `401`, `Invalid API key`, `authentication_error`
 
-API Key ผิดหรือวางไม่ครบ → ออกจาก Claude Code (`/exit`) แล้ว **วางบล็อกตั้งค่าในขั้นที่ 2.1 ของ [03_VIBE_CODING_WORKSHOP](03_VIBE_CODING_WORKSHOP.md) ใหม่ทั้งบล็อก** (จะเขียนทับไฟล์เดิม) ระวังเว้นวรรคหน้า-หลัง key
+API Key ผิดหรือวางไม่ครบ → ออกจาก Claude Code (`/exit`) แล้วเปิดไฟล์แก้ key ใหม่ใน VS Code (ดูขั้นที่ 2.3 ของ [03_VIBE_CODING_WORKSHOP](03_VIBE_CODING_WORKSHOP.md)):
+
+```bash
+code ~/.claude/settings.json
+```
+
+ระวัง: key ต้องอยู่ในเครื่องหมาย `" "` · ไม่มีเว้นวรรคหน้า-หลัง · ห้ามลบเครื่องหมาย `,` ท้ายบรรทัด
 
 ตรวจว่าไฟล์ตั้งค่าถูกต้อง (ไม่แสดง key):
 
@@ -119,14 +146,14 @@ python3 -m json.tool ~/.claude/settings.json > /dev/null && echo "ไฟล์�
 
 ### Claude Code ขึ้นหน้าเลือกวิธีล็อกอิน (Select login method) ทั้งที่ตั้งค่า GLM แล้ว
 
-ไฟล์ `~/.claude/settings.json` ไม่มีหรือเขียนผิด → กด `Ctrl + C` สองครั้ง แล้ววางบล็อกตั้งค่าในขั้นที่ 2.1 ใหม่
+ไฟล์ `~/.claude/settings.json` ไม่มีหรือเขียนผิด → กด `Ctrl + C` สองครั้ง แล้ววางบล็อกตั้งค่าในขั้นที่ 2.3 ใหม่
 
 ### ส่งคำสั่งแล้วค้างนาน / `Connection error` / `timeout`
 
 VM ติดต่อ GLM ไม่ได้ ทดสอบ (ทีมงานจะแจ้งที่อยู่ GLM):
 
 ```bash
-curl -sI https://your-glm-endpoint | head -n 1
+curl -sI https://coding.modelharbor.com | head -n 1
 ```
 
 ไม่มีผลลัพธ์ → แจ้ง TA (ปัญหาเครือข่าย หรือ GLM ล่ม)
@@ -181,20 +208,17 @@ Node.js ยังไม่ได้ติดตั้ง → วาง **บล�
 
 ### เปิด `http://localhost:3002` ไม่ขึ้น
 
-1. หน้าต่าง SSH ที่มี `-L 3002:localhost:3002` ยังเปิดอยู่ไหม — ถ้าปิดไปแล้ว SSH ใหม่ด้วยคำสั่งในขั้นที่ 1 ของ [04_MEDIA_WORKSHOP](04_MEDIA_WORKSHOP.md)
-2. Preview บน VM รันอยู่ไหม — บน VM ในโฟลเดอร์ `~/myvideo` วาง:
+1. VS Code ยังเชื่อม VM อยู่ไหม (มุมซ้ายล่างขึ้น `SSH: …`) — ถ้าหลุด กด `><` → **Connect to Host...** ใหม่
+2. แท็บ **PORTS** มี `3002` ไหม — ถ้าไม่มี กด **Forward a Port** → `3002`
+3. Preview บน VM รันอยู่ไหม — ใน Terminal ของ VS Code วาง:
 
 ```bash
 cd ~/myvideo && npx hyperframes preview --background --port 3002
 ```
 
-### ตอน SSH ขึ้น `bind [127.0.0.1]:3002: Address already in use`
+### แท็บ PORTS ขึ้นว่า port ถูกใช้อยู่ / เปิดเป็น `localhost:3003`
 
-เครื่องเราใช้ port 3002 อยู่แล้ว (เช่นเปิด SSH หลายหน้าต่าง) → ปิดหน้าต่าง SSH อื่นก่อน หรือใช้ port อื่นบนเครื่องเรา แล้วเปิด `http://localhost:3003` แทน:
-
-```bash
-ssh -L 3003:localhost:3002 trainee01@203.0.113.10
-```
+เครื่องเรามีโปรแกรมอื่นใช้ port นั้นอยู่ VS Code จึงเลือกเลขใหม่ให้ → ดูคอลัมน์ **Forwarded Address** ในแท็บ PORTS แล้วเปิดตามที่อยู่นั้นแทน
 
 ### ตัวหนังสือภาษาไทยในวิดีโอเป็นสี่เหลี่ยม □□□
 
@@ -294,19 +318,45 @@ sudo ufw status
 getent hosts trainee01.your-training-domain.com
 ```
 
-ได้ IP กลับมา (จะเป็น IP ของ Cloudflare ไม่ใช่ IP ของ VM — ถูกต้องเพราะเปิดเมฆส้ม) = DNS ใช้ได้แล้ว
+ต้องได้ **IP ของ VM ตัวเอง** — ถ้าได้ IP อื่น (ขึ้นต้น `104.` / `172.`) แปลว่ายังเปิดเมฆสีส้ม → แก้ record เป็น **DNS only**
 
-### Cloudflare `Error 521: Web server is down`
+### Certbot: `DNS problem: NXDOMAIN looking up A for …`
 
-Cloudflare ติดต่อ VM ที่ port 80 ไม่ได้ → nginx ไม่ทำงาน หรือ port 80 ปิด → ตรวจ 2 หัวข้อด้านบน
+DNS ยังไม่ชี้มาที่ VM → ตรวจ record ใน Cloudflare (Type `A`, Name ถูก, IP ถูก, **DNS only**) รอ 1–2 นาที แล้วรัน certbot ใหม่
 
-### Cloudflare `Error 522: Connection timed out`
+### Certbot: `Timeout during connect (likely firewall problem)`
 
-IP ใน A record ผิด หรือ Firewall บล็อก → ตรวจ IP ใน Cloudflare ตรงกับบัตรไหม
+Let's Encrypt เข้า port 80 ของ VM ไม่ได้:
 
-### Cloudflare `Error 525 / 526` (SSL handshake failed)
+```bash
+sudo ufw status
+```
 
-โซนตั้ง SSL/TLS mode เป็น Full/Strict แต่ VM ไม่มี HTTPS → **ทีมงาน**ต้องตั้ง SSL/TLS mode ของโซนเป็น **Flexible** (ดู [instructor/01_STAFF_PREPARATION](../instructor/01_STAFF_PREPARATION.md))
+ถ้า `Status: active` → `sudo ufw allow 'Nginx Full'` · ถ้า `inactive` → Security Group ของ Cloud ปิด port 80 / 443 → แจ้ง TA
+
+### Certbot: `Could not automatically find a matching server block`
+
+`server_name` ใน config ยังเป็น `_` → แก้เป็นชื่อโดเมนของตัวเองก่อน (แทน `trainee01` ให้ตรง):
+
+```bash
+D=trainee01.your-training-domain.com
+sudo sed -i "s/server_name _;/server_name $D;/" /etc/nginx/sites-available/myapp
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+แล้วรัน certbot ใหม่
+
+### Certbot: `too many certificates (5) already issued for this exact set of identifiers`
+
+ขอใบรับรองโดเมนเดิมซ้ำเกิน 5 ครั้งใน 7 วัน (โควตาของ Let's Encrypt) → แจ้งวิทยากร (ใช้ subdomain ใหม่ เช่น `trainee01b`)
+
+### เปิดได้แต่เป็น `http://` ไม่มีกุญแจ
+
+ยังไม่ได้รัน Certbot สำเร็จ → ทำขั้นที่ 3 ของ [07_DEPLOY_CLOUDFLARE](07_DEPLOY_CLOUDFLARE.md) ใหม่
+
+### เปิด `https://` ไม่ได้ แต่ `http://` ได้
+
+port 443 ถูกปิด → `sudo ufw allow 'Nginx Full'` หรือแจ้ง TA ตรวจ Security Group
 
 ### เว็บขึ้นแต่เป็นเวอร์ชันเก่า
 
@@ -314,15 +364,7 @@ IP ใน A record ผิด หรือ Firewall บล็อก → ตรว
 sudo cp -r ~/myapp/. /var/www/myapp/
 ```
 
-แล้วกด `Ctrl + Shift + R` ในเบราว์เซอร์ (ถ้ายังไม่เปลี่ยน อาจติด cache ของ Cloudflare — รอสักครู่)
-
-### เปิดได้แต่เป็น `http://` ไม่มีกุญแจ
-
-Proxy status ยังเป็นเมฆเทา (DNS only) → Cloudflare → DNS → Records → **Edit** → เปลี่ยนเป็น 🟠 **Proxied** → Save
-
-### `ERR_TOO_MANY_REDIRECTS`
-
-ถ้าให้ AI เพิ่มการ redirect ไป https ใน nginx จะวนกับ Cloudflare Flexible → บอก AI ว่า `ลบการ redirect จาก http ไป https ใน config nginx ออก แล้ว reload`
+แล้วกด `Ctrl + Shift + R` ในเบราว์เซอร์
 
 ---
 

@@ -21,7 +21,7 @@
 | 12.00–13.00 | พักกลางวัน | — | — |
 | 13.00–13.40 | **Module 4** ใช้ AI อย่างปลอดภัยและถูกระเบียบ | [05_AI_SAFETY_WORKSHOP](manual/05_AI_SAFETY_WORKSHOP.md) | ❌ |
 | 13.40–14.20 | **Module 5** ระบบ AI ค้นหา-ตอบคำถามจากเอกสาร (RAG) | [06_RAG_CONCEPT](manual/06_RAG_CONCEPT.md) | ❌ (สาธิต) |
-| 14.20–14.50 | **Deploy จริง** Nginx + Subdomain + Cloudflare DNS | [07_DEPLOY_CLOUDFLARE](manual/07_DEPLOY_CLOUDFLARE.md) | ✅ เต็มที่ |
+| 14.20–14.50 | **Deploy จริง** Nginx + Certbot + Cloudflare DNS | [07_DEPLOY_CLOUDFLARE](manual/07_DEPLOY_CLOUDFLARE.md) | ✅ เต็มที่ |
 | 14.50–15.00 | สรุป ถาม-ตอบ ปิดการอบรม | — | — |
 
 ---
@@ -53,9 +53,9 @@
 6. [**06_RAG_CONCEPT.md**](manual/06_RAG_CONCEPT.md) — **Module 5: เข้าใจระบบ RAG (ระดับแนวคิด)**
    - อธิบาย RAG ด้วยภาพ "บรรณารักษ์ค้นแฟ้ม"
    - คำถามที่ใช้ในการสาธิต และ checklist ถ้าหน่วยงานจะพัฒนาระบบเอง
-7. [**07_DEPLOY_CLOUDFLARE.md**](manual/07_DEPLOY_CLOUDFLARE.md) — **Deploy จริง: ขึ้นเว็บด้วย Nginx + Cloudflare DNS**
+7. [**07_DEPLOY_CLOUDFLARE.md**](manual/07_DEPLOY_CLOUDFLARE.md) — **Deploy จริง: ขึ้นเว็บด้วย Nginx + Certbot + Cloudflare DNS**
    - สั่ง AI ติดตั้ง Nginx (มีคำสั่งสำรองแบบ copy-paste หาก AI ทำไม่สำเร็จ)
-   - เพิ่ม A record ใน Cloudflare และเปิด HTTPS อัตโนมัติ (เมฆส้ม)
+   - เพิ่ม A record ใน Cloudflare (DNS only) แล้วขอ HTTPS ฟรีด้วย Certbot
 8. [**08_CHEATSHEET.md**](manual/08_CHEATSHEET.md) — **สรุปคำสั่งและ Prompt ทั้งหมดในหน้าเดียว** (พิมพ์แจกได้)
 9. [**09_TROUBLESHOOTING.md**](manual/09_TROUBLESHOOTING.md) — **เจอปัญหา แก้ตรงนี้** (SSH เข้าไม่ได้, เชื่อม GLM ไม่ได้, render วิดีโอไม่ผ่าน, เว็บไม่ขึ้น ฯลฯ)
 

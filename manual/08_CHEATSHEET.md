@@ -8,9 +8,12 @@
 
 | ทำอะไร | คำสั่ง | พิมพ์ที่ |
 |---|---|---|
-| เข้า VM (แบบธรรมดา) | `ssh trainee01@203.0.113.10` | เครื่องตัวเอง |
-| เข้า VM แบบเปิดท่อ (ใช้ตั้งแต่ Module 2) | `ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@203.0.113.10` | เครื่องตัวเอง |
+| เข้า VM ด้วย VS Code (วิธีหลัก) | `><` มุมซ้ายล่าง → **Connect to Host...** → `ssh trainee01@203.0.113.10` | VS Code |
+| เปิด Terminal ของ VM | **Terminal → New Terminal** หรือ `` Ctrl + ` `` | VS Code |
+| ส่งต่อ port ไว้ดูเว็บ / วิดีโอ | แท็บ **PORTS** → **Forward a Port** → `8080` และ `3002` | VS Code |
 | ดูเว็บทดสอบ / Studio วิดีโอ | `http://localhost:8080` / `http://localhost:3002` | เบราว์เซอร์เครื่องตัวเอง |
+| เปิดไฟล์บน VM ในตัวแก้ไข | `code ชื่อไฟล์` | Terminal ของ VS Code |
+| เข้า VM ด้วย Terminal (ทางสำรอง) | `ssh trainee01@203.0.113.10` | เครื่องตัวเอง |
 | ออกจาก VM | `exit` | VM |
 | ตรวจว่าอยู่เครื่องไหน | ดูหน้าเคอร์เซอร์: `trainee01@...:~$` = VM | — |
 
@@ -33,8 +36,11 @@
 | ทำอะไร | คำสั่ง |
 |---|---|
 | ติดตั้ง | `curl -fsSL https://claude.ai/install.sh \| bash` |
-| เชื่อมกับ AI GLM | วางบล็อกตั้งค่าในคู่มือ 03 ขั้นที่ 2.1 (สร้าง `~/.claude/settings.json`) |
+| เชื่อมกับ AI GLM | วางบล็อกตั้งค่าในคู่มือ 03 ขั้นที่ 2.3 (สร้าง `~/.claude/settings.json`) |
+| เตรียมเครื่อง (VM ใหม่) | `sudo apt-get update -y && sudo apt-get install -y curl git ca-certificates nano` |
 | เปิด (ในโฟลเดอร์งาน) | `cd ~/myapp && claude` |
+| สร้างคำสั่งลัด `ccc` | `echo 'alias ccc="claude --permission-mode bypassPermissions"' >> ~/.bashrc && source ~/.bashrc` |
+| เปิดแบบไม่ต้องกด Yes | `cd ~/myapp && ccc` (ใช้บน VM ฝึกเท่านั้น) |
 | เปิดแล้วคุยต่อจากเดิม | `cd ~/myapp && claude --continue` |
 | รันคำสั่งเองในหน้า Claude | `!คำสั่ง` เช่น `!ls` |
 | หยุด AI กลางคัน | `Esc` |
@@ -52,7 +58,8 @@
 | สั่ง AI | `cd ~/myvideo && claude` แล้วขึ้นต้น prompt ด้วย `/hyperframes` | VM |
 | ดูตัวอย่าง | เปิด `http://localhost:3002` | เบราว์เซอร์เครื่องตัวเอง |
 | render เอง | `npx hyperframes render --quality draft -o renders/promo.mp4` | VM (ใน `~/myvideo`) |
-| ดาวน์โหลดคลิป | `scp trainee01@203.0.113.10:~/myvideo/renders/promo.mp4 .` | เครื่องตัวเอง |
+| ดาวน์โหลดคลิป | แถบซ้าย VS Code → `myvideo/renders/promo.mp4` → คลิกขวา → **Download...** | VS Code |
+| อัปโหลดไฟล์ขึ้น VM | ลากไฟล์จากเครื่องไปวางในโฟลเดอร์ที่แถบซ้าย VS Code | VS Code |
 
 ## 🌐 Deploy
 
@@ -60,13 +67,16 @@
 |---|---|
 | ทดสอบเว็บทดสอบ (port 8080) | `curl -s http://localhost:8080 \| head` |
 | ทดสอบ nginx (port 80) | `curl -s http://localhost \| head` |
+| ตรวจ DNS ชี้มาที่ VM | `getent hosts trainee01.your-training-domain.com` |
 | ทดสอบผ่านโดเมนจริง | `curl -sI https://trainee01.your-training-domain.com` |
 | อัปเดตไฟล์เว็บหลังแก้ | `sudo cp -r ~/myapp/. /var/www/myapp/` |
 | ดูสถานะ nginx | `sudo systemctl status nginx --no-pager` |
 | ตรวจ config nginx | `sudo nginx -t` |
 | reload nginx | `sudo systemctl reload nginx` |
 
-**Cloudflare A record:** Type `A` · Name `trainee01` · IPv4 `IP ของ VM` · Proxy 🟠 **Proxied** · TTL `Auto`
+**Cloudflare A record:** Type `A` · Name `trainee01` · IPv4 `IP ของ VM` · Proxy ⚪ **DNS only** (เมฆสีเทา) · TTL `Auto`
+
+**ขอ HTTPS:** `sudo certbot --nginx -d trainee01.your-training-domain.com --non-interactive --agree-tos --register-unsafely-without-email --redirect` (หลัง DNS ชี้มาที่ VM แล้ว)
 
 ---
 

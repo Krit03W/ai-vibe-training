@@ -19,7 +19,7 @@
 | Module 2 จบ | `ls ~/myapp` มี `index.html` |
 | Module 3B | เปิด `http://localhost:3002` เห็น Studio + มี `~/myvideo/renders/promo.mp4` |
 | Deploy ขั้นที่ 1 | เปิด `http://<IP>` จากเบราว์เซอร์เห็นเว็บ |
-| Deploy จบ | เปิด `https://<subdomain>.<โดเมน>` เห็นเว็บ 🔒 |
+| Deploy จบ | Certbot สำเร็จ + เปิด `https://<subdomain>.<โดเมน>` เห็นเว็บ 🔒 |
 
 ## คำสั่งตรวจเครื่องผู้อบรมแบบรวดเดียว (วางบน VM ของผู้อบรม)
 
@@ -44,16 +44,14 @@ echo "== ufw =="; sudo ufw status 2>/dev/null | head -n 1
 | วางคำสั่งแล้ว `'ssh' is not recognized` | Windows ไม่มี OpenSSH | ดู troubleshooting หรือให้ใช้เครื่องสำรอง |
 | วางคำสั่ง Linux ลงใน PowerShell ของเครื่องตัวเอง | ยังไม่ได้ SSH | ดูหน้าเคอร์เซอร์ → SSH ก่อน |
 | `claude: command not found` | PATH ยังไม่โหลด | `source ~/.bashrc` |
-| AI ตอบ `401` / `Invalid API key` | วาง key ไม่ครบ / มีเว้นวรรค | วางบล็อกตั้งค่า GLM ในคู่มือ 03 ขั้นที่ 2.1 ใหม่ |
+| AI ตอบ `401` / `Invalid API key` | วาง key ไม่ครบ / มีเว้นวรรค | วางบล็อกตั้งค่า GLM ในคู่มือ 03 ขั้นที่ 2.3 ใหม่ |
 | ขึ้นหน้าเลือกวิธีล็อกอิน | ไม่มี `~/.claude/settings.json` | วางบล็อกตั้งค่า GLM ใหม่ |
-| `localhost:3002` ไม่ขึ้น | SSH ไม่ได้ใส่ `-L` / preview ไม่รัน | SSH ใหม่ด้วย `-L 3002:localhost:3002` / `npx hyperframes preview --background --port 3002` ใน `~/myvideo` |
+| `localhost:3002` ไม่ขึ้น | ยังไม่ได้ Forward port / preview ไม่รัน | แท็บ PORTS → Forward a Port `3002` / `npx hyperframes preview --background --port 3002` ใน `~/myvideo` |
 | ตัวไทยในวิดีโอเป็น □□□ | ไม่มีฟอนต์ไทย | `sudo apt-get install -y fonts-thai-tlwg fonts-noto-core` แล้ว render ใหม่ |
 | AI ขอ sudo แล้วค้าง/ล้มเหลว | ไม่ได้ตั้ง NOPASSWD | `echo "$USER ALL=(ALL) NOPASSWD:ALL" \| sudo tee /etc/sudoers.d/90-training-$USER` (ใส่รหัสผู้อบรม) |
 | AI สร้างไฟล์ผิดโฟลเดอร์ | เปิด `claude` นอก `~/myapp` | ย้ายไฟล์: `mv ~/index.html ~/myapp/` |
 | เว็บขึ้น "Welcome to nginx!" | config default ยังเปิด | ดู troubleshooting หัวข้อ Deploy |
-| Error 521 | nginx ไม่รัน / port 80 ปิด | `sudo systemctl status nginx` / `sudo ufw allow 80/tcp` |
-| Error 522 | IP ใน DNS record ผิด | แก้ record ใน Cloudflare |
-| Error 525/526 | Zone ไม่ใช่ Flexible | แจ้งวิทยากร (แก้ครั้งเดียวทั้ง zone) |
+| Certbot `DNS problem` / `Timeout` | DNS ยังไม่ชี้มา / ยังเปิดเมฆส้ม / port 80 ปิด | ตรวจ `getent hosts โดเมน` ต้องได้ IP ของ VM · ตั้ง record เป็น DNS only · เปิด port 80/443 |
 | SSH หลุด Claude หาย | เน็ตสะดุด | SSH ใหม่ → `cd ~/myapp && claude --continue` |
 
 ## สิ่งที่ TA ต้องมีติดตัว

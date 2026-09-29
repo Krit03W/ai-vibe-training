@@ -299,19 +299,20 @@ Vibe Coding
 
 ภาพ: มือ ↔ สมอง + screenshot หน้าจอขออนุญาต
 
-### 27 · 2.5 เข้า VM แบบเปิดท่อ
+### 27 · 2.5 เข้า VM ด้วย VS Code Remote - SSH
 
-`ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@IP`
+1. ติดตั้ง VS Code + ส่วนเสริม Remote - SSH
+2. กด `><` มุมซ้ายล่าง → Connect to Host → `ssh trainee01@IP`
+3. เปิดโฟลเดอร์ + Terminal ของ VM
+4. แท็บ PORTS → Forward `8080` (เว็บ) และ `3002` (วิดีโอ)
 
-- localhost:8080 → ดูเว็บที่สร้าง บนเบราว์เซอร์เครื่องเรา
-- localhost:3002 → ดูวิดีโอที่ตัดต่อ (หัวข้อ 3)
-- เปิดหน้าต่าง SSH ค้างไว้ตลอดวัน
+ภาพ: หน้าจอ VS Code มุมซ้ายล่างขึ้น SSH: IP + แท็บ PORTS
 
 ภาพ: แล็ปท็อป ──ท่อ──▶ VM บนคลาวด์
 
 ### 28 · 2.5 Workshop 2A (1/3) · ติดตั้งและเชื่อม GLM (10 นาที)
 
-1. SSH แบบเปิดท่อ → `mkdir -p ~/myapp && cd ~/myapp`
+1. เชื่อม VM ด้วย VS Code → `mkdir -p ~/myapp && cd ~/myapp`
 2. ติดตั้ง Claude Code (คัดลอกคำสั่ง 3 บรรทัด)
 3. วางบล็อกตั้งค่า GLM → วาง API Key จากซองเมื่อถูกถาม
 4. เปิด `claude` → ถาม "สวัสดี" → ตอบภาษาไทย = สำเร็จ
@@ -916,29 +917,29 @@ RAG
 ### 65 · ปก
 
 **6 · นำเครื่องมือที่สร้างเองขึ้นเว็บจริง**
-Nginx + Subdomain + Cloudflare
+Nginx + Certbot + Cloudflare DNS
 
 ### 66 · เว็บเดินทางอย่างไร
 
-มือถือ → Cloudflare (HTTPS ฟรี) → Nginx บน VM → index.html ที่ AI สร้าง
+มือถือ → Cloudflare DNS (บอก IP) → Nginx บน VM (+ ใบรับรองจาก Certbot) → index.html ที่ AI สร้าง
 
 - Nginx = พนักงานเสิร์ฟเว็บ
+- Certbot = ขอใบรับรอง HTTPS 🔒 ฟรี
 - DNS = สมุดโทรศัพท์ของอินเทอร์เน็ต
-- A record = "ชื่อนี้ → IP นี้"
-- Proxied (เมฆส้ม) = ได้กุญแจ 🔒 อัตโนมัติ
+- A record = "ชื่อนี้ → IP นี้" (DNS only · เมฆสีเทา)
 
 ภาพ: แผนภาพ 4 กล่องเรียงซ้ายไปขวา
 
-### 67 · Workshop 6A (1/3) · ให้ AI ติดตั้ง Nginx (10 นาที)
+### 67 · Workshop 6A (1/3) · ให้ AI ติดตั้ง Nginx + Certbot (10 นาที)
 
 1. `cd ~/myapp && claude --continue`
-2. วาง prompt ติดตั้ง nginx จากคู่มือ 07
+2. วาง prompt ติดตั้ง nginx + certbot จากคู่มือ 07
 3. กด Yes ตามที่ AI ขอ
 4. เปิด http://IP-ของ-VM → เห็นเว็บ
 
 AI ทำไม่สำเร็จ → ใช้คำสั่งสำรองในคู่มือ 07
 
-### 68 · Workshop 6A (2/3) · เพิ่มชื่อเว็บใน Cloudflare (15 นาที)
+### 68 · Workshop 6A (2/3) · เพิ่มชื่อเว็บใน Cloudflare (10 นาที)
 
 DNS → Records → Add record
 
@@ -947,11 +948,14 @@ DNS → Records → Add record
 | Type | A |
 | Name | trainee01 (ตามบัตร) |
 | IPv4 | IP ของ VM ตัวเอง |
-| Proxy | Proxied 🟠 |
+| Proxy | DNS only ⚪ (เมฆสีเทา) |
 
 ห้ามแก้ / ลบ record ของคนอื่น
 
-### 69 · Workshop 6A (3/3) · เปิดจากมือถือ (5 นาที)
+### 69 · Workshop 6A (3/3) · ขอ HTTPS ด้วย Certbot + เปิดจากมือถือ (10 นาที)
+
+สั่ง AI: "ขอใบรับรอง HTTPS ให้โดเมนของฉันด้วย certbot" (หลัง DNS ชี้มาที่ VM แล้ว)
+
 
 https://trainee01.your-training-domain.com 🔒
 

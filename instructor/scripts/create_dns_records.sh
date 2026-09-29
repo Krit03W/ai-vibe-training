@@ -8,7 +8,7 @@
 #
 # ใช้งาน:
 #   export CF_API_TOKEN=xxxx CF_ZONE_ID=yyyy
-#   bash create_dns_records.sh create <trainees.csv>   # สร้าง A record (Proxied) ให้ทุกคน
+#   bash create_dns_records.sh create <trainees.csv>   # สร้าง A record (DNS only) ให้ทุกคน
 #   bash create_dns_records.sh delete <trainees.csv>   # ลบ A record ของทุกคน (หลังอบรม)
 #
 # CSV: username,full_name,ip,subdomain  (แถวแรกเป็นหัวตาราง)
@@ -51,7 +51,7 @@ while IFS=, read -r username _full_name ip subdomain; do
       echo "ข้าม   $fqdn (มี record อยู่แล้ว)"
       continue
     fi
-    body=$(printf '{"type":"A","name":"%s","content":"%s","proxied":true,"ttl":1,"comment":"training %s"}' \
+    body=$(printf '{"type":"A","name":"%s","content":"%s","proxied":false,"ttl":1,"comment":"training %s"}' \
       "$subdomain" "$ip" "$username")
     ok=$(curl -sS "${AUTH[@]}" -X POST "$API" --data "$body" | json_field 'd["success"]')
     echo "สร้าง  $fqdn -> $ip : $ok"

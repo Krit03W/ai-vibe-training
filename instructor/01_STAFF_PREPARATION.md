@@ -9,7 +9,7 @@
 | 1 | VM Ubuntu 1 เครื่อง/คน (+ สำรอง 2–3 เครื่อง) | Module 2, Deploy | ทีม Infra | ☐ |
 | 2 | AI GLM: endpoint + ชื่อโมเดล + API Key ต่อคน (Claude Code เชื่อมผ่าน GLM) | Module 2, 3, Deploy | ทีม AI / Infra | ☐ |
 | 2.1 | คลิปตัวอย่างสำหรับตัดต่อ + ทดสอบ HyperFrames render บน VM | Module 3 | วิทยากร | ☐ |
-| 3 | Cloudflare Zone + สิทธิ์ผู้อบรม + SSL mode Flexible | Deploy | ทีม Infra | ☐ |
+| 3 | Cloudflare Zone + สิทธิ์ผู้อบรม (record แบบ DNS only · HTTPS ด้วย Certbot บน VM) | Deploy | ทีม Infra | ☐ |
 | 4 | บัตร VM + ซองรหัสผ่าน | ทั้งวัน | ผู้ประสานงาน | ☐ |
 | 5 | แอปสำรองที่ deploy เสร็จแล้ว | Deploy | วิทยากร | ☐ |
 | 6 | ระบบ RAG สำหรับสาธิต | Module 5 | วิทยากร | ☐ |
@@ -17,6 +17,14 @@
 | 8 | TA 1 คน / ผู้อบรม 5–8 คน | Module 2, Deploy | ผู้ประสานงาน | ☐ |
 
 ---
+
+## 0. เครื่องของผู้อบรม (โน้ตบุ๊ก)
+
+ผู้อบรมเข้า VM ด้วย **VS Code + Remote - SSH** ตลอดวัน (คู่มือ 02 หัวข้อ 1)
+
+- [ ] ติดตั้ง **VS Code** และส่วนเสริม **Remote - SSH** (ของ Microsoft) ล่วงหน้า — เครื่องหน่วยงานมักติดตั้งโปรแกรมเองไม่ได้ ให้ประสาน IT ติดตั้งให้ หรือเตรียม VS Code แบบ **User Installer / .zip** ไว้ใน USB
+- [ ] เครือข่ายสถานที่อบรมออก port 22 ได้ (VS Code Remote - SSH ใช้ SSH เหมือนกัน)
+- [ ] VM ต้องออกอินเทอร์เน็ตได้ — ครั้งแรกที่เชื่อม VS Code จะดาวน์โหลด VS Code Server ลง VM (ประมาณ 100 MB ต่อเครื่อง ใช้ RAM ราว 300–500 MB ขณะเชื่อม)
 
 ## 1. VM (ต่อผู้อบรม 1 เครื่อง)
 
@@ -73,25 +81,18 @@ DOMAIN=your-training-domain.com bash instructor/scripts/check_vms.sh ~/secure/tr
 
 ### 2.1 AI GLM สำหรับ Claude Code
 
-ผู้อบรมติดตั้ง Claude Code เอง แล้ว **ตั้งค่าให้ส่งงานไปที่ AI GLM ของเรา** ผ่านไฟล์ `~/.claude/settings.json` (คู่มือ 03 ขั้นที่ 2.1) — ไม่ต้องใช้บัญชี Claude
+ผู้อบรมติดตั้ง Claude Code เอง แล้ว **ตั้งค่าให้ส่งงานไปที่ AI GLM ของเรา** ผ่านไฟล์ `~/.claude/settings.json` (คู่มือ 03 ขั้นที่ 2.3) — ไม่ต้องใช้บัญชี Claude
 
 ต้องเตรียม:
 
 | รายการ | ตัวอย่างในคู่มือ (placeholder) | หมายเหตุ |
 |---|---|---|
-| Endpoint ที่รองรับ Anthropic API | `https://your-glm-endpoint/api/anthropic` | ต้องรับ request รูปแบบ Anthropic Messages API (`/v1/messages`) |
-| ชื่อโมเดล | `your-glm-model` | ใช้ชื่อเดียวกันทั้ง OPUS / SONNET / HAIKU ได้ ถ้ามีรุ่นเล็ก ใส่ใน HAIKU |
+| Endpoint | `https://coding.modelharbor.com` | รูปแบบ Anthropic Messages API (ตรวจแล้ว `/v1/messages` ตอบ 401 เมื่อไม่มี key) |
+| โมเดลหลัก (OPUS / SONNET) | `glm-latest` | |
+| โมเดลเล็ก (HAIKU / SUBAGENT) | `deepseek-flash-latest` | |
 | API Key | — (แจกในซอง) | **1 key ต่อผู้อบรม** ตั้งวงเงิน/rate limit ต่อ key และ **revoke หลังอบรม** |
 
-**ก่อนวันอบรม แทน placeholder ทั้ง repo ด้วยค่าจริง** (endpoint และชื่อโมเดลไม่ใช่ความลับ แต่ **ห้าม commit API Key**):
-
-```bash
-# macOS (Linux: ใช้ sed -i โดยไม่มี '')
-grep -rl 'your-glm-endpoint\|your-glm-model' README.md manual instructor slides \
-  | xargs sed -i '' -e 's#https://your-glm-endpoint/api/anthropic#https://GLM-ENDPOINT-จริง#g' \
-                    -e 's#https://your-glm-endpoint#https://GLM-HOST-จริง#g' \
-                    -e 's#your-glm-model#ชื่อโมเดลจริง#g'
-```
+ค่าทั้งหมดใส่ไว้ในคู่มือ 03 ขั้นที่ 2.3 แล้ว ผู้อบรม **วางแค่ API Key ของตัวเอง** · ห้าม commit API Key ลง repo
 
 ทดสอบบน VM หนึ่งเครื่องด้วยบัญชีผู้อบรมจริง: ตั้งค่าตามคู่มือ 03 → `claude` → ถาม 1 คำถาม → สั่งสร้าง `index.html` ตามโจทย์ A ให้ครบรอบ
 
@@ -128,7 +129,7 @@ Cloudflare Universal SSL (ฟรี) ออกใบรับรองให้ 
 
 | รูปแบบ URL ผู้อบรม | Zone ใน Cloudflare | HTTPS ฟรีใช้ได้? |
 |---|---|---|
-| `trainee01.your-training-domain.com` | `your-training-domain.com` | ✅ ได้ (ชั้นเดียว) — **รูปแบบที่คู่มือใช้** |
+| `trainee01.your-training-domain.com` | `your-training-domain.com` | ✅ (Certbot ออกใบรับรองให้ทุกระดับ subdomain อยู่แล้ว) — **รูปแบบที่คู่มือใช้** |
 | `trainee01.training.yourdomain.go.th` | `yourdomain.go.th` | ❌ **ไม่ได้** (สองชั้น) — ต้องซื้อ Advanced Certificate Manager หรือเปิด Total TLS |
 | `trainee01.training.yourdomain.go.th` | `training.yourdomain.go.th` (subdomain zone) | ⚠️ ตรวจก่อนว่าแผน Cloudflare ของ account รองรับการเพิ่ม subdomain เป็น zone แยก |
 
@@ -143,15 +144,17 @@ Cloudflare Universal SSL (ฟรี) ออกใบรับรองให้ 
 > grep -rl 'your-training-domain.com' README.md manual slides | xargs sed -i 's/your-training-domain\.com/aitraining-example.com/g'
 > ```
 
-### 3.2 ตั้งค่า Zone
+### 3.2 ตั้งค่า Zone และ HTTPS
+
+HTTPS ทำด้วย **Certbot (Let's Encrypt) บน VM แต่ละเครื่อง** — Cloudflare ใช้เป็น DNS อย่างเดียว
 
 | การตั้งค่า | ค่า | เหตุผล |
 |---|---|---|
-| **SSL/TLS → Overview → encryption mode** | **Flexible** | VM เปิดแค่ HTTP port 80 — ถ้าเป็น Full/Strict จะเจอ Error 525/526 |
-| SSL/TLS → Edge Certificates → Always Use HTTPS | On | ผู้ใช้พิมพ์ `http://` ก็ถูกพาไป `https://` |
-| DNS records ของผู้อบรม | สร้างโดยผู้อบรมเอง (Workshop) หรือทีมงานสร้างล่วงหน้า | ดู 3.3 |
+| Proxy status ของ record ผู้อบรม | **DNS only (เมฆสีเทา)** | Certbot ต้องยืนยันโดเมนกับ VM โดยตรงผ่าน port 80 |
+| Security Group / Firewall ของ VM | เปิด **22, 80, 443** | 80 = Certbot ยืนยันโดเมน · 443 = HTTPS |
+| SSL/TLS mode ของ zone | ไม่มีผล (record ไม่ผ่าน proxy) | — |
 
-> ⚠️ **Flexible** หมายถึง ช่วง Cloudflare → VM ไม่เข้ารหัส ยอมรับได้สำหรับเว็บสาธิตที่ไม่มีข้อมูลสำคัญ **ไม่ควรใช้กับระบบจริง**
+> ⚠️ **โควตา Let's Encrypt:** ขอใบรับรองชื่อเดิมได้ไม่เกิน **5 ใบต่อ 7 วัน** และไม่เกิน 50 ใบต่อโดเมนหลักต่อ 7 วัน — ตอนซ้อมให้ใช้ `--staging` (`sudo certbot --nginx --staging -d …`) หรือใช้ subdomain สำหรับซ้อมแยกจากที่แจกผู้อบรม
 
 ### 3.3 สิทธิ์ของผู้อบรมในการเพิ่ม DNS record
 

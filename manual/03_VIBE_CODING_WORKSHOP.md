@@ -70,17 +70,14 @@
 
 ### ขั้นที่ 1 — เข้า VM และเตรียมโฟลเดอร์ (5 นาที)
 
-SSH เข้า VM **แบบเปิดท่อ (Tunnel)** — ต่างจากตอนพักเบรกตรงที่เพิ่ม `-L ...` สองชุด เพื่อให้เปิดดูเว็บและวิดีโอที่อยู่บน VM ผ่านเบราว์เซอร์บนเครื่องเราได้ (ใช้คำสั่งนี้ทุกครั้งจากนี้ไปทั้งวัน):
+เปิด **VS Code** แล้วเชื่อม VM ด้วย Remote - SSH (ดู [02_SSH_VM](02_SSH_VM.md) หัวข้อ 1.3–1.5):
 
-```bash
-# -L 8080:... = เปิด http://localhost:8080 บนเครื่องเรา → ไปที่เว็บทดสอบบน VM
-# -L 3002:... = เปิด http://localhost:3002 บนเครื่องเรา → ไปที่หน้าตัดต่อวิดีโอบน VM (ใช้ใน Module 3)
-ssh -L 8080:localhost:8080 -L 3002:localhost:3002 trainee01@203.0.113.10
-```
+1. กด `><` มุมซ้ายล่าง → **Connect to Host...** → เลือก IP ของตัวเอง → ใส่รหัสผ่าน
+2. รอจนมุมซ้ายล่างขึ้น `SSH: 203.0.113.10`
+3. เปิด Terminal: เมนู **Terminal → New Terminal**
+4. แท็บ **PORTS** → **Forward a Port** → `8080` (ไว้เปิดดูเว็บที่ AI สร้าง — ดู [02_SSH_VM](02_SSH_VM.md) หัวข้อ 1.6)
 
-> 📌 **เปิดหน้าต่าง SSH นี้ค้างไว้** — ถ้าปิด ท่อจะหายไปด้วย ถ้าเผลอปิด ให้วางคำสั่งเดิมใหม่
-
-เมื่อเห็น `trainee01@...:~$` แล้ว วางคำสั่งนี้:
+เมื่อ Terminal ขึ้น `trainee01@...:~$` แล้ว วางคำสั่งนี้:
 
 ```bash
 # สร้างโฟลเดอร์ myapp สำหรับเก็บเครื่องมือของเรา แล้วเข้าไปในโฟลเดอร์
@@ -90,6 +87,26 @@ mkdir -p ~/myapp && cd ~/myapp && pwd
 ✅ **ผลที่ควรเห็น:** `/home/trainee01/myapp`
 
 ### ขั้นที่ 2 — ติดตั้ง Claude Code และเชื่อมกับ AI GLM (5 นาที)
+
+**2.0 เตรียมเครื่องมือพื้นฐาน** (VM ใหม่ยังไม่มีอะไรเลย วางครั้งเดียว)
+
+```bash
+# อัปเดตรายการโปรแกรม แล้วติดตั้งเครื่องมือพื้นฐานที่ตัวติดตั้ง Claude Code ต้องใช้
+sudo apt-get update -y
+sudo apt-get install -y curl git ca-certificates nano python3
+
+# ดาวน์โหลดคู่มือและไฟล์ตัวอย่างไว้ที่ ~/training (ถ้ามีอยู่แล้วจะอัปเดตให้)
+[ -d ~/training/.git ] && git -C ~/training pull --ff-only || git clone --depth 1 https://github.com/Krit03W/ai-vibe-training.git ~/training
+
+# ตรวจว่า sudo ใช้ได้โดยไม่ต้องใส่รหัส (AI ต้องใช้ตอนติดตั้งโปรแกรม)
+sudo -n true && echo "sudo: OK ✅" || echo "sudo: ต้องใส่รหัสผ่าน ❌ (แจ้ง TA)"
+```
+
+✅ **ผลที่ควรเห็น:** ไม่มีข้อความ `E:` (error) · มีโฟลเดอร์ `~/training` · บรรทัดสุดท้ายขึ้น `sudo: OK ✅`
+
+> ❗ ถ้าขึ้น `sudo: ต้องใส่รหัสผ่าน` — AI จะติดตั้งโปรแกรมให้ไม่ได้ ให้ TA ตั้งค่า sudo แบบไม่ใส่รหัส (คู่มือทีมงาน `setup_vm.sh`) หรือรันคำสั่งที่มี `sudo` ด้วยตัวเองใน Terminal
+
+**2.1 ติดตั้ง Claude Code**
 
 ```bash
 # ดาวน์โหลดและติดตั้ง Claude Code (AI CLI) — ใช้เวลาประมาณ 30 วินาที
@@ -111,54 +128,98 @@ claude --version
 
 ❌ ขึ้น `claude: command not found` → ดู [09_TROUBLESHOOTING](09_TROUBLESHOOTING.md#claude-command-not-found)
 
-### ขั้นที่ 2.1 — เชื่อม Claude Code เข้ากับ AI GLM ของเรา
+**2.2 สร้างคำสั่งลัด `ccc`**
+
+ปกติ Claude Code จะถามขออนุญาตก่อนสร้างไฟล์หรือรันคำสั่งทุกครั้ง คำสั่งลัด `ccc` จะเปิด Claude Code แบบ **ไม่ต้องถาม** (`bypassPermissions`) ทำงานได้เร็วขึ้นมากใน Workshop
+
+```bash
+# เพิ่มคำสั่งลัด ccc ลงใน ~/.bashrc (ถ้ามีอยู่แล้วจะไม่เพิ่มซ้ำ) แล้วโหลดค่าใหม่
+grep -q 'alias ccc=' ~/.bashrc || echo 'alias ccc="claude --permission-mode bypassPermissions"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+```bash
+# ตรวจว่ามีคำสั่งลัดแล้ว
+type ccc
+```
+
+✅ **ผลที่ควรเห็น:** `ccc is aliased to 'claude --permission-mode bypassPermissions'`
+
+| พิมพ์ | ต่างกันอย่างไร | ใช้เมื่อ |
+|---|---|---|
+| `claude` | AI **ถามก่อนทุกครั้ง** ให้เรากด Yes / No | อยากเห็นว่า AI จะทำอะไรทีละขั้น |
+| `ccc` | AI **ทำเลยไม่ถาม** | ทำงานในโฟลเดอร์ฝึก (`~/myapp`, `~/myvideo`) ให้เสร็จเร็ว |
+
+> ⚠️ **`ccc` ให้ AI รันคำสั่งได้ทุกอย่างโดยไม่ถาม** รวมถึงคำสั่ง `sudo` บน VM นี้ — ใช้ได้เพราะเป็นเครื่องฝึกที่สร้างใหม่ได้ **ห้ามใช้ `ccc` บนเครื่องทำงานจริงหรือเครื่องที่มีข้อมูลสำคัญ** และถ้าเห็น AI กำลังทำสิ่งที่ไม่ได้สั่ง ให้กด `Esc` หยุดทันที
+
+### ขั้นที่ 2.3 — เชื่อม Claude Code เข้ากับ AI GLM ของเรา
 
 Claude Code เป็นแค่ "ตัวช่วยทำงาน" ใน Terminal ส่วน "สมอง" ที่คิดและเขียนโค้ดจะเป็น **AI GLM** ที่ทีมงานเตรียมไว้ ขั้นนี้คือการบอก Claude Code ว่าให้ไปคุยกับ GLM ที่ไหน
 
-คุณจะได้ **API Key ของ GLM** ในซองจากทีมงาน วางบล็อกนี้ทั้งบล็อก แล้ว **วาง API Key เมื่อถูกถาม** (ขณะวางจะมองไม่เห็นตัวอักษร เหมือนตอนใส่รหัสผ่าน SSH)
+คุณจะได้ **API Key** ในซองจากทีมงาน ทำใน **VS Code (Remote - SSH)** ที่เชื่อมกับ VM อยู่:
+
+**1) เปิดไฟล์ตั้งค่าของ Claude Code** — พิมพ์ใน Terminal ของ VS Code (เมนู **Terminal → New Terminal**)
 
 ```bash
-# 1) ถาม API Key แบบซ่อนตัวอักษร (key จะไม่ถูกบันทึกในประวัติคำสั่ง)
-read -r -s -p "วาง API Key ของ GLM แล้วกด Enter: " GLM_KEY; echo
+code ~/.claude/settings.json
+```
 
-# 2) สร้างไฟล์ตั้งค่า ให้ Claude Code ส่งงานไปที่ AI GLM
-mkdir -p ~/.claude
-cat > ~/.claude/settings.json <<EOF
+ไฟล์ `settings.json` จะเปิดขึ้นในแท็บของ VS Code (ถ้ายังไม่มีไฟล์ VS Code จะสร้างให้ใหม่เป็นไฟล์ว่าง)
+
+> 🛟 ถ้า `code` ใช้ไม่ได้: เมนู **File → Open File...** แล้วพิมพ์ `~/.claude/settings.json` → **OK**
+
+**2) คัดลอกข้อความนี้ไปวางในไฟล์** — ถ้าในไฟล์มีข้อความเดิมอยู่ ให้กด `Ctrl + A` (Mac: `⌘ + A`) เลือกทั้งหมดแล้ววางทับ
+
+```json
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://your-glm-endpoint/api/anthropic",
-    "ANTHROPIC_AUTH_TOKEN": "$GLM_KEY",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "your-glm-model",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "your-glm-model",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "your-glm-model",
-    "API_TIMEOUT_MS": "600000"
+    "ANTHROPIC_AUTH_TOKEN": "your-api-key",
+    "ANTHROPIC_BASE_URL": "https://coding.modelharbor.com",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-latest",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-latest",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-flash-latest",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-flash-latest"
   }
 }
-EOF
-
-# 3) ให้เฉพาะเจ้าของเครื่องอ่านไฟล์นี้ได้ แล้วลบ key ออกจากหน่วยความจำ
-chmod 600 ~/.claude/settings.json
-unset GLM_KEY
-echo "ตั้งค่าเสร็จแล้ว ✅"
 ```
+
+**3) แก้ `your-api-key` เป็น API Key จากซอง** (ให้อยู่ในเครื่องหมาย `" "` เหมือนเดิม) แล้วกด `Ctrl + S` (Mac: `⌘ + S`) บันทึก
+
+บรรทัดที่ 3 ควรหน้าตาแบบนี้ (key ของจริงยาวกว่านี้):
+
+```text
+    "ANTHROPIC_AUTH_TOKEN": "sk-xxxxxxxxxxxxxxxx",
+```
+
+**4) ตรวจว่าใส่ key แล้ว** — พิมพ์ใน Terminal ของ VS Code
+
+```bash
+chmod 600 ~/.claude/settings.json
+grep -q '"your-api''-key"' ~/.claude/settings.json && echo "❌ ยังไม่ได้ใส่ key — แก้ในไฟล์แล้วบันทึกใหม่" || echo "ตั้งค่าเสร็จแล้ว ✅"
+```
+
+> 💡 ถ้า VS Code ขีดเส้นแดงใต้ข้อความในไฟล์ แปลว่ารูปแบบผิด — มักเกิดจากลบเครื่องหมาย `"` หรือ `,` ไป ให้วางข้อความชุดเดิมทับใหม่แล้วใส่ key อีกครั้ง
 
 | บรรทัดในไฟล์ตั้งค่า | ความหมาย |
 |---|---|
-| `ANTHROPIC_BASE_URL` | ที่อยู่ของ AI GLM (ทีมงานกำหนดไว้แล้ว) |
-| `ANTHROPIC_AUTH_TOKEN` | API Key ของเรา — **เหมือนรหัสผ่าน** |
-| `ANTHROPIC_DEFAULT_*_MODEL` | ชื่อโมเดล GLM ที่ใช้ |
+| `ANTHROPIC_AUTH_TOKEN` | API Key ของเรา (แทน `your-api-key`) — **เหมือนรหัสผ่าน** |
+| `ANTHROPIC_BASE_URL` | ที่อยู่ของ AI (ModelHarbor) — ทีมงานกำหนดไว้แล้ว |
+| `ANTHROPIC_DEFAULT_OPUS_MODEL` / `SONNET_MODEL` | โมเดลหลักที่คิดและเขียนโค้ด: `glm-latest` |
+| `ANTHROPIC_DEFAULT_HAIKU_MODEL` / `CLAUDE_CODE_SUBAGENT_MODEL` | โมเดลเล็กสำหรับงานย่อยให้เร็วขึ้น: `deepseek-flash-latest` |
 
 ✅ **ผลที่ควรเห็น:** `ตั้งค่าเสร็จแล้ว ✅`
 
 > ⚠️ **API Key = รหัสผ่าน** ไฟล์ `~/.claude/settings.json` อยู่ในเครื่องเราเท่านั้น — ห้ามคัดลอกไฟล์นี้ไปที่อื่น, ห้ามส่ง key ในแชทกลุ่ม, ห้ามถ่ายภาพหน้าจอที่เห็น key (เชื่อมกับ Module 4)
 
-### ขั้นที่ 2.2 — เปิด Claude Code
+### ขั้นที่ 2.4 — เปิด Claude Code
 
 **ต้องอยู่ในโฟลเดอร์ `~/myapp` ก่อนเปิดเสมอ** (AI จะทำงานในโฟลเดอร์ที่เปิด)
 
 ```bash
 cd ~/myapp && claude
 ```
+
+> 💡 จะใช้ `cd ~/myapp && ccc` แทนก็ได้ (ไม่ต้องกด Yes ทุกครั้ง — ดูขั้นที่ 2.2) แนะนำให้ครั้งแรกใช้ `claude` ก่อน จะได้เห็นว่า AI ขออนุญาตทำอะไรบ้าง
 
 ครั้งแรกจะมีคำถามทีละหน้า ใช้ปุ่ม `↑` `↓` เลือก แล้วกด `Enter`:
 
@@ -303,7 +364,7 @@ cd ~/myapp && claude
 
 #### 3.3.1 เปิดดูในเบราว์เซอร์บนเครื่องตัวเอง 🎉
 
-เพราะเรา SSH แบบเปิดท่อไว้ในขั้นที่ 1 เปิดเบราว์เซอร์ **บนเครื่องตัวเอง** ไปที่:
+VS Code ส่งต่อ port `8080` ให้แล้ว (ขั้นที่ 1) — กด **Open in Browser** ที่กล่องมุมขวาล่าง หรือเปิดเบราว์เซอร์ **บนเครื่องตัวเอง** ไปที่:
 
 ```text
 http://localhost:8080
@@ -311,9 +372,9 @@ http://localhost:8080
 
 ✅ **ผลที่ควรเห็น:** หน้าเว็บเครื่องมือของเรา ลองกรอกตัวเลขและกดปุ่มได้เลย
 
-> 📌 ตอนนี้มีแค่เราที่เห็น (ผ่านท่อ SSH) — **ช่วงบ่ายจะติดตั้ง Nginx แล้วเปิดให้ทุกคนเห็นผ่านโดเมนจริง**
+> 📌 ตอนนี้มีแค่เราที่เห็น (ผ่าน VS Code) — **ช่วงบ่ายจะติดตั้ง Nginx แล้วเปิดให้ทุกคนเห็นผ่านโดเมนจริง**
 >
-> ❌ เปิดไม่ขึ้น → ตรวจว่า SSH ใช้คำสั่งที่มี `-L 8080:localhost:8080` และหน้าต่าง SSH ยังเปิดอยู่
+> ❌ เปิดไม่ขึ้น → ดูแท็บ **PORTS** ว่ามี `8080` หรือยัง ถ้าไม่มีให้กด **Forward a Port** → `8080` และตรวจว่า VS Code ยังเชื่อม VM อยู่ (มุมซ้ายล่างขึ้น `SSH: …`)
 
 #### 3.4 สั่งแก้เฉพาะจุด (ถ้ามีเวลา)
 
