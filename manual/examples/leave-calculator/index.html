@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เครื่องคำนวณวันลาพักผ่อนคงเหลือ</title>
+  <style>
+    :root { --navy: #0b2e59; --sky: #e8f1fb; --orange: #c2410c; --red: #b91c1c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Sarabun", "Noto Sans Thai", system-ui, sans-serif; background: var(--sky); color: #1f2937; }
+    header { background: var(--navy); color: #fff; padding: 20px 16px; text-align: center; }
+    header h1 { margin: 0; font-size: 1.4rem; }
+    header p { margin: 6px 0 0; opacity: .85; }
+    main { max-width: 480px; margin: 24px auto; padding: 0 16px; }
+    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(11, 46, 89, .08); }
+    label { display: block; font-weight: 600; margin-top: 14px; }
+    input { width: 100%; padding: 12px; margin-top: 6px; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; }
+    button { width: 100%; margin-top: 20px; padding: 14px; font-size: 1.1rem; font-weight: 700; color: #fff; background: var(--navy); border: 0; border-radius: 8px; cursor: pointer; }
+    #result { margin-top: 20px; text-align: center; }
+    .big { font-size: 3rem; font-weight: 800; color: var(--navy); line-height: 1.1; }
+    .muted { color: #475569; }
+    .warn { color: var(--orange); font-weight: 700; }
+    .error { color: var(--red); text-align: left; }
+    footer { text-align: center; font-size: .85rem; color: #475569; padding: 24px 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>เครื่องคำนวณวันลาพักผ่อนคงเหลือ</h1>
+    <p>สำหรับข้าราชการ ประจำปีงบประมาณนี้</p>
+  </header>
+
+  <main>
+    <form class="card" id="leave-form" novalidate>
+      <label for="years">อายุราชการ (ปี)</label>
+      <input id="years" type="number" inputmode="decimal" min="0" step="0.1" placeholder="เช่น 3">
+
+      <label for="carried">วันลาสะสมยกมาจากปีก่อน (วัน)</label>
+      <input id="carried" type="number" inputmode="decimal" min="0" step="0.5" placeholder="เช่น 5">
+
+      <label for="used">วันลาพักผ่อนที่ใช้ไปแล้วปีนี้ (วัน)</label>
+      <input id="used" type="number" inputmode="decimal" min="0" step="0.5" placeholder="เช่น 4">
+
+      <button type="submit">คำนวณ</button>
+      <div id="result" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <footer>เครื่องมือนี้สร้างด้วย AI เพื่อการอบรม — ผลคำนวณใช้ประกอบเท่านั้น</footer>
+
+  <script src="app.js"></script>
+  <script>
+    const result = document.getElementById('result');
+
+    document.getElementById('leave-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const r = LeaveCalc.calculateLeave({
+        yearsOfService: document.getElementById('years').value,
+        carriedOver: document.getElementById('carried').value,
+        used: document.getElementById('used').value,
+      });
+
+      if (!r.ok) {
+        result.innerHTML = '<ul class="error">' + r.errors.map((e) => `<li>${e}</li>`).join('') + '</ul>';
+      } else if (r.notEligible) {
+        result.innerHTML = '<p class="warn">ยังไม่มีสิทธิ์ลาพักผ่อน (อายุราชการไม่ถึง 6 เดือน)</p>';
+      } else if (r.overused) {
+        result.innerHTML = `<p class="warn">ใช้เกินสิทธิ์ ${-r.remaining} วัน</p><p class="muted">สิทธิ์ปีนี้ ${r.entitlement} วัน</p>`;
+      } else {
+        result.innerHTML =
+          `<div class="muted">วันลาพักผ่อนคงเหลือ</div><div class="big">${r.remaining}</div><div class="muted">จากสิทธิ์ปีนี้ ${r.entitlement} วัน</div>` +
+          (r.lowBalance ? '<p class="warn">⚠️ เหลือน้อยกว่า 3 วัน วางแผนการลาให้ดี</p>' : '');
+      }
+    });
+  </script>
+</body>
+</html>

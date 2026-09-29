@@ -125,6 +125,7 @@ echo "สวัสดีครับ ผมพร้อมอบรมแล้�
 | Module 1 (Prompt) | ChatGPT / Claude / Microsoft Copilot | บัญชีฟรีก็ได้ — **ล็อกอินไว้ก่อนเริ่ม** |
 | Module 2 (Vibe Coding) | Claude Code (AI CLI) บน VM เชื่อมกับ AI GLM | ไม่ต้องมีบัญชี — ใช้ **API Key ของ GLM ในซอง** |
 | Module 3 (สื่อ) | Canva / Ideogram / ChatGPT + HyperFrames บน VM | เว็บ: บัญชีฟรีก็ได้ — **ล็อกอินไว้ก่อนเริ่ม** · HyperFrames: ทีมงานติดตั้งไว้แล้ว |
+| Module 2 (เก็บงาน) | **GitHub** — AI push โค้ดขึ้น repo ของเรา | **ต้องมีบัญชีของตัวเอง** (ฟรี <https://github.com/signup>) — **ล็อกอิน github.com ไว้ในเบราว์เซอร์** |
 | Deploy | Cloudflare Dashboard | ทีมงานแจกบัญชีหน้างาน |
 
 > ⚠️ วันนี้ **ห้ามใช้เอกสารจริงที่มีข้อมูลส่วนบุคคลหรือเอกสารลับ** ป้อนเข้า AI — ใช้ไฟล์ตัวอย่างใน [`samples/`](samples/) แทน (รายละเอียดใน Module 4)
@@ -138,6 +139,7 @@ echo "สวัสดีครับ ผมพร้อมอบรมแล้�
 - [ ] เปิด Terminal ได้ และ `ssh -V` แสดงเวอร์ชัน (ไว้ใช้เป็นทางสำรอง)
 - [ ] ลอง copy-paste คำสั่ง `echo` สำเร็จ
 - [ ] ล็อกอินเว็บ AI (ChatGPT / Claude / Copilot) อย่างน้อย 1 เว็บไว้ในเบราว์เซอร์
+- [ ] มีบัญชี **GitHub** และล็อกอิน github.com ไว้ในเบราว์เซอร์ (ใช้ใน Module 2)
 - [ ] เปิดหน้าคู่มือนี้ค้างไว้ในเบราว์เซอร์
 
 ➡️ ต่อไป: [01_PROMPT_WORKSHOP.md](01_PROMPT_WORKSHOP.md)

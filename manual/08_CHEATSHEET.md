@@ -41,9 +41,16 @@
 | เปิด (ในโฟลเดอร์งาน) | `cd ~/myapp && claude` |
 | สร้างคำสั่งลัด `ccc` | `echo 'alias ccc="claude --permission-mode bypassPermissions"' >> ~/.bashrc && source ~/.bashrc` |
 | ติดตั้ง Engineer Skills | `npx -y skills@latest add Krit03W/krit-engineer-skills -g -a claude-code -s '*' -y` |
-| ให้ AI สัมภาษณ์ก่อนสร้าง | `/grill-with-docs …` (พิมพ์ใน Claude Code) |
-| ต้นแบบหน้าตาหลายแบบ | `/prototype …` |
-| ขั้นตอนแบบวิศวกร | `/to-spec` → `/to-tickets` → `/implement` → `/code-review` |
+| Login GitHub | `gh auth login --hostname github.com --git-protocol https --web` → เปิด `github.com/login/device` บนเครื่องตัวเอง ใส่โค้ด |
+| ตรวจว่า login แล้ว | `gh auth status` |
+| เตรียมโปรเจกต์ + สร้าง repo | วางบล็อกในคู่มือ 03 ขั้นที่ 2.6 (สร้าง `CONTEXT.md` + `gh repo create myapp --private ...`) |
+| push งานขึ้น GitHub เอง | `cd ~/myapp && git push` |
+| ดูลิงก์ repo | `gh repo view --json url -q .url` |
+| ออกจาก GitHub (หลังอบรม) | `gh auth logout --hostname github.com` |
+| **flow สร้างแอป (บังคับ)** | ① `/grill-with-docs` → ② `/to-spec` → ③ `/to-tickets` → ④ `/implement T1` → ⑤ `/code-review` |
+| ทำ ticket ที่เหลือ | `/work-on-issues` |
+| ต้นแบบหน้าตาหลายแบบ (ไม่บังคับ) | `/prototype …` |
+| รันเทสต์ / ดูประวัติงาน | `!node --test` / `!git log --oneline` |
 | เปิดแบบไม่ต้องกด Yes | `cd ~/myapp && ccc` (ใช้บน VM ฝึกเท่านั้น) |
 | เปิดแล้วคุยต่อจากเดิม | `cd ~/myapp && claude --continue` |
 | รันคำสั่งเองในหน้า Claude | `!คำสั่ง` เช่น `!ls` |

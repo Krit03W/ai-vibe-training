@@ -6,7 +6,7 @@
 
 - [SSH](#ssh)
 - [VS Code Remote - SSH](#vscode)
-- [Claude Code (AI CLI)](#claude-code)
+- [Claude Code (AI CLI)](#claude-code) · [GitHub (gh / push)](#github)
 - [HyperFrames (ตัดต่อวิดีโอ)](#hyperframes)
 - [Deploy / Nginx / Cloudflare](#deploy)
 - [อื่น ๆ](#other)
@@ -174,7 +174,22 @@ User ของ VM ยังไม่ได้ตั้ง sudo แบบไม�
 
 ### skill ขอให้รัน `/setup-krit-skills` หรือถามเรื่อง GitHub / issue tracker
 
-ยังไม่มีไฟล์ `CONTEXT.md` → ทำขั้น "เตรียมโปรเจกต์ครั้งเดียว" ใน [10_WORKSHOP_BANK](10_WORKSHOP_BANK.md) (หัวข้อ Engineer Skills) หรือพิมพ์บอก AI ว่า `ไม่ต้องตั้งค่า issue tracker ใช้แบบ local`
+ยังไม่มีไฟล์ `CONTEXT.md` → ทำ [03 ขั้นที่ 2.6](03_VIBE_CODING_WORKSHOP.md#step-2-6) หรือพิมพ์บอก AI ว่า `ไม่ต้องตั้งค่า issue tracker ใช้แบบ local ตาม CONTEXT.md`
+
+<a id="github"></a>
+
+### GitHub: `gh auth login` / `git push` ไม่สำเร็จ
+
+| อาการ | แก้ |
+|---|---|
+| `gh: command not found` | ทำ [03 ขั้นที่ 2.5](03_VIBE_CODING_WORKSHOP.md#gh-login) ข้อ 1 ใหม่ |
+| ใส่โค้ดไม่ทัน / `expired` | รัน `gh auth login --hostname github.com --git-protocol https --web` ใหม่ ได้โค้ดใหม่ |
+| หน้า `github.com/login/device` ให้ล็อกอินก่อน | ล็อกอิน GitHub ในเบราว์เซอร์เครื่องตัวเอง (ยืนยัน 2FA ถ้ามี) แล้วใส่โค้ดอีกครั้ง |
+| `git push` ขึ้น `Authentication failed` / `could not read Username` | `gh auth setup-git` แล้ว `git push` ใหม่ |
+| `gh repo create` ขึ้น `Name already exists on this account` | ใช้ชื่ออื่น: `gh repo create myapp-ai-training --private --source=. --remote=origin --push` |
+| `git push` ขึ้น `! [rejected] ... (fetch first)` | `git pull --rebase origin main && git push` |
+| `error: src refspec main does not match any` | ยังไม่มี commit: `git add -A && git commit -m "เริ่มโปรเจกต์" && git push -u origin main` |
+| `Author identity unknown` ตอน commit | ทำ 03 ขั้นที่ 2.5 ข้อ 3 (ตั้งชื่อผู้เขียน commit) |
 
 ### AI ทำงานนานมาก / วนไปวนมา
 

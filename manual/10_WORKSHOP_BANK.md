@@ -299,6 +299,8 @@ Git คือ "ระบบบันทึกเวอร์ชัน" — แ�
 ![Engineer Skills 6 ขั้น: สัมภาษณ์ → ลองหน้าตา → เขียนสเปก → แตกงาน → ทำทีละงาน → ตรวจงาน](images/03_engineer_skills.jpg)
 
 
+> 📌 flow หลัก `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` → `/code-review` **สอนเป็นภาคบังคับแล้วในคู่มือ 03 ขั้นที่ 3** — Workshop ชุดนี้ใช้ฝึกซ้ำกับแอปที่ 2 (`~/myproject`) หรือขยายแอปเดิม · ตัวอย่างผลลัพธ์ทุกขั้น: [`examples/leave-calculator/`](examples/leave-calculator/)
+
 ใช้ skill จาก [krit-engineer-skills](https://github.com/Krit03W/krit-engineer-skills) ที่ติดตั้งแล้วในคู่มือ 03 ขั้นที่ 2.4 (ถ้ายังไม่ได้ติดตั้ง: `npx -y skills@latest add Krit03W/krit-engineer-skills -g -a claude-code -s '*' -y` แล้วเปิด `claude` ใหม่)
 
 ```mermaid

@@ -16,7 +16,9 @@
 | ลงทะเบียน | `ssh -V` ขึ้นเวอร์ชัน |
 | เบรกเช้า | SSH เข้า VM ได้ + `sudo: OK` |
 | Module 2 ขั้นที่ 2 | `claude --version` ขึ้นเวอร์ชัน + AI ตอบคำถามทดสอบเป็นภาษาไทย (เชื่อม GLM สำเร็จ) |
-| Module 2 จบ | `ls ~/myapp` มี `index.html` |
+| Module 2 ขั้นที่ 2.5–2.6 | `gh auth status` ขึ้น `Logged in` + `gh repo view --json url -q .url` ได้ลิงก์ repo `myapp` |
+| Module 2 ขั้นที่ 3 | ผ่าน ①–⑤ ครบ: มีไฟล์ใน `docs/specs/` และ `docs/tickets/` · `node --test` ขึ้น `fail 0` |
+| Module 2 จบ | `ls ~/myapp` มี `index.html` `app.js` `tests` · `git log --oneline` มี commit ของ T1 |
 | Module 3B | เปิด `http://localhost:3002` เห็น Studio + มี `~/myvideo/renders/promo.mp4` |
 | Deploy ขั้นที่ 1 | เปิด `http://<IP>` จากเบราว์เซอร์เห็นเว็บ |
 | Deploy จบ | Certbot สำเร็จ + เปิด `https://<subdomain>.<โดเมน>` เห็นเว็บ 🔒 |
@@ -29,6 +31,7 @@ echo "== sudo =="; sudo -n true && echo OK || echo "ต้องใส่รห�
 echo "== claude =="; command -v claude && claude --version || echo "ไม่พบ claude"
 echo "== glm settings =="; test -f ~/.claude/settings.json && grep -o '"ANTHROPIC_BASE_URL": "[^"]*"' ~/.claude/settings.json || echo "ยังไม่ได้ตั้งค่า GLM"
 echo "== myapp =="; ls -la ~/myapp 2>/dev/null || echo "ไม่มีโฟลเดอร์ ~/myapp"
+echo "== github =="; gh auth status 2>&1 | grep -m1 -E "Logged in|not logged" || echo "ยังไม่ได้ติดตั้ง gh"; git -C ~/myapp status -sb 2>/dev/null | head -n 1
 echo "== myvideo =="; ls -la ~/myvideo/renders 2>/dev/null || echo "ยังไม่มีวิดีโอ"
 echo "== port 8080 =="; curl -s -o /dev/null -w '%{http_code}\n' --max-time 3 http://localhost:8080
 echo "== nginx =="; systemctl is-active nginx 2>/dev/null || echo "ยังไม่ติดตั้ง"
@@ -49,6 +52,12 @@ echo "== ufw =="; sudo ufw status 2>/dev/null | head -n 1
 | `localhost:3002` ไม่ขึ้น | ยังไม่ได้ Forward port / preview ไม่รัน | แท็บ PORTS → Forward a Port `3002` / `npx hyperframes preview --background --port 3002` ใน `~/myvideo` |
 | ตัวไทยในวิดีโอเป็น □□□ | ไม่มีฟอนต์ไทย | `sudo apt-get install -y fonts-thai-tlwg fonts-noto-core` แล้ว render ใหม่ |
 | AI ขอ sudo แล้วค้าง/ล้มเหลว | ไม่ได้ตั้ง NOPASSWD | ให้ทำคู่มือ 02 หัวข้อ 4.1 (ใส่รหัส SSH ของผู้อบรม) |
+| พิมพ์ `/grill-with-docs` แล้ว `Unknown skill` | ยังไม่ได้ติดตั้ง skill / เปิด claude ก่อนติดตั้ง | `/exit` → คู่มือ 03 ขั้นที่ 2.4 → เปิด `claude` ใหม่ |
+| AI ขอรัน `/setup-krit-skills` หรือจะใช้ `gh` / เปิด PR | ไม่มี `CONTEXT.md` | ทำคู่มือ 03 ขั้นที่ 2.6 แล้วตอบ AI ว่า `ใช้ CONTEXT.md tracker แบบ local` |
+| AI ข้ามขั้น (เขียนโค้ดตอน grill) | prompt ไม่ได้บอกให้รอ | `Esc` → `ยังไม่ต้องเขียนโค้ด สรุปก่อน` |
+| `gh auth login` ใส่โค้ดไม่ทัน / โค้ดหมดอายุ | โค้ดมีอายุ 15 นาที | รันคำสั่ง login ใหม่ ได้โค้ดใหม่ |
+| push ขึ้น `Authentication failed` | git ยังไม่ใช้สิทธิ์จาก gh | `gh auth setup-git` แล้ว `git push` |
+| ผู้อบรมไม่มีบัญชี GitHub / ติด 2FA ไม่มีมือถือ | — | ให้ข้ามส่วน GitHub ทำ flow ต่อด้วย commit ในเครื่อง (ไม่กระทบ Deploy) |
 | AI สร้างไฟล์ผิดโฟลเดอร์ | เปิด `claude` นอก `~/myapp` | ย้ายไฟล์: `mv ~/index.html ~/myapp/` |
 | เว็บขึ้น "Welcome to nginx!" | config default ยังเปิด | ดู troubleshooting หัวข้อ Deploy |
 | Certbot `DNS problem` / `Timeout` | DNS ยังไม่ชี้มา / ยังเปิดเมฆส้ม / port 80 ปิด | ตรวจ `getent hosts โดเมน` ต้องได้ IP ของ VM · ตั้ง record เป็น DNS only · เปิด port 80/443 |

@@ -58,7 +58,7 @@ cd ~/myapp && claude --continue
 ช่วยนำเว็บในโฟลเดอร์นี้ขึ้นเว็บจริงด้วย nginx ตามขั้นตอนนี้:
 1. ติดตั้ง nginx, certbot และ python3-certbot-nginx ด้วย sudo apt-get install -y (ถ้ายังไม่มี) — ยังไม่ต้องขอใบรับรองตอนนี้
 2. สร้างโฟลเดอร์ /var/www/myapp แล้วคัดลอกไฟล์ทั้งหมดในโฟลเดอร์ปัจจุบันไปไว้ที่นั่น
-3. สร้างไฟล์ config ชื่อ /etc/nginx/sites-available/myapp ให้ nginx รับทุกชื่อโดเมนที่ port 80 (listen 80 default_server และ server_name _) แล้วแสดงไฟล์จาก /var/www/myapp โดยมี index.html เป็นหน้าแรก
+3. สร้างไฟล์ config ชื่อ /etc/nginx/sites-available/myapp ให้ nginx รับทุกชื่อโดเมนที่ port 80 (listen 80 default_server และ server_name _) แล้วแสดงไฟล์จาก /var/www/myapp โดยมี index.html เป็นหน้าแรก และห้ามให้คนนอกเปิดไฟล์ของนักพัฒนา (ไฟล์/โฟลเดอร์ที่ขึ้นต้นด้วยจุด เช่น .git, โฟลเดอร์ docs และ tests, ไฟล์ CONTEXT.md) ให้ตอบ 404
 4. ลบลิงก์ config default เดิมใน /etc/nginx/sites-enabled แล้วเปิดใช้ config myapp แทน
 5. ตรวจ config ด้วย nginx -t แล้ว reload nginx
 6. ถ้ามี firewall ufw เปิดอยู่ ให้อนุญาต port 80 และ 443
@@ -114,6 +114,11 @@ server {
     location / {
         try_files $uri $uri/ =404;
     }
+
+    # ไม่เปิดไฟล์ของนักพัฒนาให้คนนอกเห็น (.git, สเปก, เทสต์)
+    location ~ /\. { return 404; }
+    location ~ ^/(docs|tests)/ { return 404; }
+    location = /CONTEXT.md { return 404; }
 }
 EOF
 ```
