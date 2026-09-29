@@ -81,14 +81,14 @@
 3. เปิด Terminal: เมนู **Terminal → New Terminal**
 4. แท็บ **PORTS** → **Forward a Port** → `8080` (ไว้เปิดดูเว็บที่ AI สร้าง — ดู [02_SSH_VM](02_SSH_VM.md) หัวข้อ 1.6)
 
-เมื่อ Terminal ขึ้น `trainee01@...:~$` แล้ว วางคำสั่งนี้:
+เมื่อ Terminal ขึ้น `admins@...:~$` แล้ว วางคำสั่งนี้:
 
 ```bash
 # สร้างโฟลเดอร์ myapp สำหรับเก็บเครื่องมือของเรา แล้วเข้าไปในโฟลเดอร์
 mkdir -p ~/myapp && cd ~/myapp && pwd
 ```
 
-✅ **ผลที่ควรเห็น:** `/home/trainee01/myapp`
+✅ **ผลที่ควรเห็น:** `/home/admins/myapp`
 
 ### ขั้นที่ 2 — ติดตั้ง Claude Code + Engineer Skills และเชื่อมกับ AI GLM (10 นาที)
 

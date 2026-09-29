@@ -302,7 +302,7 @@ Vibe Coding
 ### 27 · 2.5 เข้า VM ด้วย VS Code Remote - SSH
 
 1. ติดตั้ง VS Code + ส่วนเสริม Remote - SSH
-2. กด `><` มุมซ้ายล่าง → Connect to Host → `ssh trainee01@IP`
+2. กด `><` มุมซ้ายล่าง → Connect to Host → `ssh admins@IP`
 3. เปิดโฟลเดอร์ + Terminal ของ VM
 4. แท็บ PORTS → Forward `8080` (เว็บ) และ `3002` (วิดีโอ)
 
@@ -572,7 +572,7 @@ AI มักเขียนภาษาไทยในภาพผิด → เ
 1. ดูตัวอย่างที่ http://localhost:3002
 2. สั่งแก้เฉพาะจุด: "ช่วงชื่องานค้างนานขึ้นเป็น 4 วินาที" · "ตัดคลิปที่สองให้สั้นลง"
 3. สั่ง render ใหม่
-4. ดาวน์โหลด: `scp trainee01@IP:~/myvideo/renders/promo.mp4 .`
+4. ดาวน์โหลด: `scp admins@IP:~/myvideo/renders/promo.mp4 .`
 
 ผู้บรรยาย: ระหว่าง AI ทำงาน เดินดูว่าทุกคนเปิด Studio ได้
 
@@ -636,7 +636,7 @@ AI มักเขียนภาษาไทยในภาพผิด → เ
 
 1. ให้เว็บ AI เขียนบท 20 วินาที
 2. สร้างเสียงด้วย Text-to-Speech ภาษาไทย หรืออัดเสียงตัวเองด้วยมือถือ
-3. อัปโหลด: `scp narration.mp3 trainee01@IP:~/myvideo/assets/`
+3. อัปโหลด: `scp narration.mp3 admins@IP:~/myvideo/assets/`
 4. "/hyperframes ใส่เสียงบรรยาย ปรับจังหวะภาพให้ตรงกับเสียง"
 
 ตัวสร้างเสียงในตัว HyperFrames ยังไม่รองรับภาษาไทย

@@ -241,7 +241,7 @@ ls -lh assets
 
 > 💡 **อยากใช้คลิปของตัวเอง?** ใน VS Code ลากไฟล์คลิปจากเครื่องตัวเอง (File Explorer / Finder) ไปวางในโฟลเดอร์ `myvideo/assets` ที่แถบซ้ายของ VS Code — ไฟล์จะถูกอัปโหลดขึ้น VM ให้เอง
 >
-> (ทางสำรองด้วย Terminal บนเครื่องตัวเอง: `scp myclip.mp4 trainee01@203.0.113.10:~/myvideo/assets/`)
+> (ทางสำรองด้วย Terminal บนเครื่องตัวเอง: `scp myclip.mp4 admins@203.0.113.10:~/myvideo/assets/`)
 >
 > ⚠️ ห้ามใช้คลิปที่มีใบหน้า / เสียงของบุคคลที่ยังไม่ได้ให้อนุญาต และห้ามใช้คลิปที่มีข้อมูลส่วนบุคคล
 
@@ -341,9 +341,9 @@ http://localhost:3002
 
 ✅ ได้ไฟล์ `promo.mp4` บนเครื่องตัวเอง — ดับเบิลคลิกเปิดดูได้เลย 🎉
 
-> 🛟 ถ้าไม่เห็นโฟลเดอร์ `myvideo` ในแถบซ้าย: เมนู **File → Open Folder...** → `/home/trainee01/` → **OK**
+> 🛟 ถ้าไม่เห็นโฟลเดอร์ `myvideo` ในแถบซ้าย: เมนู **File → Open Folder...** → `/home/admins/` → **OK**
 >
-> ทางสำรองด้วย Terminal บนเครื่องตัวเอง: `scp trainee01@203.0.113.10:~/myvideo/renders/promo.mp4 .`
+> ทางสำรองด้วย Terminal บนเครื่องตัวเอง: `scp admins@203.0.113.10:~/myvideo/renders/promo.mp4 .`
 
 > 💡 **ช่วงบ่าย (Deploy):** นำคลิปนี้ไปใส่ในเว็บของตัวเองได้ — บอก AI ว่า `คัดลอก ~/myvideo/renders/promo.mp4 ไปไว้ใน /var/www/myapp แล้วเพิ่มวิดีโอนี้ในหน้า index.html`
 

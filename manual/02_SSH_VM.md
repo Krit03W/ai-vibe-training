@@ -20,10 +20,10 @@
 |---|---|
 | `PS C:\Users\somchai>` | เครื่อง Windows ของเราเอง |
 | `somchai@MacBook ~ %` | เครื่อง Mac ของเราเอง |
-| `trainee01@training-vm-01:~$` | **VM ✅** (หลัง SSH สำเร็จ) |
+| `admins@training-vm-01:~$` | **VM ✅** (หลัง SSH สำเร็จ) |
 | มุมซ้ายล่างของ VS Code ขึ้น `SSH: 203.0.113.10` | **VS Code เชื่อม VM อยู่ ✅** |
 
-> 📌 **จำไว้:** คำสั่งในคู่มือส่วนใหญ่ต้องรัน **บน VM** — ก่อนวางคำสั่งให้ดูว่าหน้าเคอร์เซอร์เป็น `trainee01@...:~$` แล้ว
+> 📌 **จำไว้:** คำสั่งในคู่มือส่วนใหญ่ต้องรัน **บน VM** — ก่อนวางคำสั่งให้ดูว่าหน้าเคอร์เซอร์เป็น `admins@...:~$` แล้ว
 
 ---
 
@@ -57,10 +57,10 @@ flowchart LR
 
 1. กดปุ่ม `><` มุมซ้ายล่าง → เลือก **Connect to Host...**
 2. เลือก **+ Add New SSH Host...**
-3. พิมพ์คำสั่งนี้ (แก้ชื่อผู้ใช้และ IP ตามบัตร) แล้วกด `Enter`
+3. พิมพ์คำสั่งนี้ (แก้ IP ตามบัตร) แล้วกด `Enter`
 
 ```text
-ssh trainee01@203.0.113.10
+ssh admins@203.0.113.10
 ```
 
 4. ถามว่าจะบันทึกลงไฟล์ไหน → เลือก **ตัวเลือกแรก** (เช่น `C:\Users\ชื่อคุณ\.ssh\config`)
@@ -71,7 +71,7 @@ ssh trainee01@203.0.113.10
 |---|---|
 | Select the platform of the remote host | **Linux** |
 | "…" has fingerprint … Are you sure you want to continue? | **Continue** |
-| Enter password for trainee01@… | พิมพ์รหัสผ่านจากซอง → `Enter` |
+| Enter password for admins@… | พิมพ์รหัสผ่านจากซอง → `Enter` |
 
 7. รอประมาณ 1 นาที (ครั้งแรก VS Code จะติดตั้งตัวเชื่อมต่อบน VM ให้เอง)
 
@@ -82,7 +82,7 @@ ssh trainee01@203.0.113.10
 ### 1.4 เปิดโฟลเดอร์งานบน VM
 
 1. เมนู **File → Open Folder...**
-2. พิมพ์ `/home/trainee01/` (แก้ชื่อผู้ใช้ให้ตรง) → กด **OK**
+2. พิมพ์ `/home/admins/` → กด **OK**
 3. ถ้าถามรหัสผ่านอีกครั้ง ใส่รหัสเดิม
 4. ถ้าถาม **Do you trust the authors of the files in this folder?** → กด **Yes, I trust the authors**
 
@@ -92,7 +92,7 @@ ssh trainee01@203.0.113.10
 
 เมนู **Terminal → New Terminal** (หรือ `` Ctrl + ` ``)
 
-✅ **ผลที่ควรเห็น:** ช่องด้านล่างขึ้น `trainee01@training-vm-01:~$` — **คำสั่งทุกอย่างในคู่มือวางที่นี่**
+✅ **ผลที่ควรเห็น:** ช่องด้านล่างขึ้น `admins@training-vm-01:~$` — **คำสั่งทุกอย่างในคู่มือวางที่นี่**
 
 > 💡 ใน Terminal ของ VS Code วางข้อความด้วย `Ctrl + V` (Mac: `⌘ + V`) หรือคลิกขวา → Paste ได้เลย
 
@@ -131,11 +131,11 @@ ssh trainee01@203.0.113.10
 
 ### 2.1 พิมพ์คำสั่ง ssh
 
-เปิด Terminal (ดู [00_BEFORE_YOU_START](00_BEFORE_YOU_START.md) หัวข้อ 2) แล้วคัดลอกคำสั่งนี้ **แก้ `trainee01` และ `203.0.113.10` เป็นของตัวเอง** ก่อนกด `Enter`:
+เปิด Terminal (ดู [00_BEFORE_YOU_START](00_BEFORE_YOU_START.md) หัวข้อ 2) แล้วคัดลอกคำสั่งนี้ **แก้ `203.0.113.10` เป็น IP ของตัวเอง** ก่อนกด `Enter`:
 
 ```bash
-# รูปแบบ: ssh ชื่อผู้ใช้@IP
-ssh trainee01@203.0.113.10
+# รูปแบบ: ssh admins@IP ของเครื่องตัวเอง
+ssh admins@203.0.113.10
 ```
 
 > 💡 วิธีแก้ง่ายที่สุด: วางคำสั่งลงใน Terminal ก่อน **ยังไม่กด Enter** แล้วใช้ปุ่มลูกศร ← → เลื่อนไปแก้ชื่อและ IP จากนั้นค่อยกด `Enter`
@@ -155,7 +155,7 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 ### 2.3 ใส่รหัสผ่าน
 
 ```text
-trainee01@203.0.113.10's password:
+admins@203.0.113.10's password:
 ```
 
 พิมพ์รหัสผ่านจากซอง แล้วกด `Enter`
@@ -169,10 +169,10 @@ trainee01@203.0.113.10's password:
 ```text
 Welcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-xx-generic x86_64)
 ...
-trainee01@training-vm-01:~$
+admins@training-vm-01:~$
 ```
 
-เห็น `trainee01@...:~$` = **เข้า VM สำเร็จ** 🎉
+เห็น `admins@...:~$` = **เข้า VM สำเร็จ** 🎉
 
 ❌ เจอ `Permission denied`, `Connection timed out` หรืออื่น ๆ → ดู [09_TROUBLESHOOTING](09_TROUBLESHOOTING.md#ssh)
 
@@ -187,7 +187,7 @@ trainee01@training-vm-01:~$
 pwd
 ```
 
-✅ ควรเห็น `/home/trainee01`
+✅ ควรเห็น `/home/admins`
 
 ```bash
 # 2) mkdir = สร้างโฟลเดอร์ใหม่ชื่อ myapp (ใช้ใน Module 2)
@@ -206,7 +206,7 @@ ls
 cd ~/myapp
 ```
 
-✅ หน้าเคอร์เซอร์เปลี่ยนเป็น `trainee01@...:~/myapp$`
+✅ หน้าเคอร์เซอร์เปลี่ยนเป็น `admins@...:~/myapp$`
 
 ```bash
 # 5) cat = แสดงเนื้อหาไฟล์ (ตัวอย่าง: ดูข้อมูลเวอร์ชัน Ubuntu)
@@ -260,7 +260,7 @@ sudo -n true && echo "sudo: OK" || echo "sudo: ต้องใส่รหัส
 ✅ **ผลที่ควรเห็น** (เวอร์ชันอาจต่างเล็กน้อย):
 
 ```text
-ผู้ใช้: trainee01  เครื่อง: training-vm-01
+ผู้ใช้: admins  เครื่อง: training-vm-01
 Python 3.12.3
 curl 8.5.0 (x86_64-pc-linux-gnu) ...
 sudo: OK

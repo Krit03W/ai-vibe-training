@@ -37,7 +37,7 @@ Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 
 รหัสผ่านผิด หรือชื่อผู้ใช้ผิด
 
-- ตรวจชื่อผู้ใช้ในคำสั่ง `ssh trainee01@...` ตรงกับบัตรไหม (ตัวพิมพ์เล็ก-ใหญ่มีผล)
+- ตรวจชื่อผู้ใช้ในคำสั่ง `ssh admins@...` ตรงกับบัตรไหม (ตัวพิมพ์เล็ก-ใหญ่มีผล)
 - พิมพ์รหัสผ่านใหม่ช้า ๆ (มองไม่เห็นตัวอักษรเป็นเรื่องปกติ) — ระวัง Caps Lock และภาษาไทย/อังกฤษ
 - ลองวางรหัสผ่านด้วยคลิกขวา (Windows) / `⌘ + V` (Mac)
 
@@ -76,7 +76,7 @@ cd ~/myapp && claude --continue
 ### VS Code: `Could not establish connection to "…"`
 
 - ตรวจ IP / ชื่อผู้ใช้ — กด `><` → **Connect to Host...** → **Configure SSH Hosts...** → เปิดไฟล์ config แล้วดูว่าบรรทัด `HostName` และ `User` ถูกไหม
-- ลองเข้าด้วย Terminal ธรรมดา `ssh trainee01@IP` (คู่มือ 02 หัวข้อ 2) — ถ้า Terminal ก็เข้าไม่ได้ ดูหัวข้อ SSH ด้านบน
+- ลองเข้าด้วย Terminal ธรรมดา `ssh admins@IP` (คู่มือ 02 หัวข้อ 2) — ถ้า Terminal ก็เข้าไม่ได้ ดูหัวข้อ SSH ด้านบน
 
 ### VS Code ค้างที่ `Setting up SSH Host … (Downloading VS Code Server)`
 
