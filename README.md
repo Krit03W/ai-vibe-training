@@ -20,7 +20,7 @@
 | 11.20–12.00 | **Module 3** การใช้ AI ในการผลิตสื่อ | [04_MEDIA_WORKSHOP](manual/04_MEDIA_WORKSHOP.md) | ✅ (ตัดต่อวิดีโอ) |
 | 12.00–13.00 | พักกลางวัน | — | — |
 | 13.00–13.40 | **Module 4** ใช้ AI อย่างปลอดภัยและถูกระเบียบ | [05_AI_SAFETY_WORKSHOP](manual/05_AI_SAFETY_WORKSHOP.md) | ❌ |
-| 13.40–14.20 | **Module 5** ระบบ AI ค้นหา-ตอบคำถามจากเอกสาร (RAG) | [06_RAG_CONCEPT](manual/06_RAG_CONCEPT.md) | ❌ (สาธิต) |
+| 13.40–14.20 | **Module 5** ระบบ AI ค้นหา-ตอบคำถามจากเอกสาร (RAG) | [06_RAG_CONCEPT](manual/06_RAG_CONCEPT.md) | ❌ (สาธิต + ลองใช้ NotebookLM) |
 | 14.20–14.50 | **Deploy จริง** Nginx + Certbot + Cloudflare DNS | [07_DEPLOY_CLOUDFLARE](manual/07_DEPLOY_CLOUDFLARE.md) | ✅ เต็มที่ |
 | 14.50–15.00 | สรุป ถาม-ตอบ ปิดการอบรม | — | — |
 
