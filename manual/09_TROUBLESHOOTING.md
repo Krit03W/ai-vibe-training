@@ -164,7 +164,7 @@ curl -sI https://coding.modelharbor.com | head -n 1
 
 ### AI บอกว่า `sudo: a password is required` หรือ `sudo: a terminal is required`
 
-User ของ VM ยังไม่ได้ตั้ง sudo แบบไม่ต้องใส่รหัสผ่าน → แจ้ง TA หรือใช้ **🛟 ทางสำรอง** ใน [07_DEPLOY_CLOUDFLARE](07_DEPLOY_CLOUDFLARE.md) โดยออกจาก Claude Code แล้ววางคำสั่งเอง (จะถามรหัสผ่าน VM — ใส่รหัสจากซอง)
+User ของ VM ยังไม่ได้ตั้ง sudo แบบไม่ต้องใส่รหัสผ่าน → ออกจาก Claude Code (`/exit`) แล้วทำ [02_SSH_VM หัวข้อ 4.1](02_SSH_VM.md#sudo-nopasswd) จากนั้นเปิด `claude --continue` ใหม่ · ถ้ายังไม่ได้ ใช้ **🛟 ทางสำรอง** ใน [07_DEPLOY_CLOUDFLARE](07_DEPLOY_CLOUDFLARE.md) โดยออกจาก Claude Code แล้ววางคำสั่งเอง (จะถามรหัสผ่าน VM — ใส่รหัสจากซอง)
 
 ### พิมพ์ `/grill-with-docs` แล้วขึ้น `Unknown command` / AI ไม่รู้จัก skill
 

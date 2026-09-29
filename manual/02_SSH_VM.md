@@ -254,7 +254,7 @@ exit
 echo "ผู้ใช้: $(whoami)  เครื่อง: $(hostname)"
 python3 --version 2>/dev/null || echo "python3: ยังไม่มี (ไม่เป็นไร)"
 curl --version 2>/dev/null | head -n 1 || echo "curl: ยังไม่มี (จะติดตั้งใน Module 2)"
-sudo -n true && echo "sudo: OK" || echo "sudo: ต้องใส่รหัสผ่าน (แจ้ง TA)"
+sudo -n true && echo "sudo: OK" || echo "sudo: ต้องใส่รหัสผ่าน (ทำหัวข้อ 4.1)"
 ```
 
 ✅ **ผลที่ควรเห็น** (เวอร์ชันอาจต่างเล็กน้อย):
@@ -268,7 +268,40 @@ sudo: OK
 
 3. เปิด VS Code ค้างไว้ได้เลย — ใช้ต่อใน Module 2
 
-> ❗ ถ้าบรรทัดสุดท้ายขึ้น `sudo: ต้องใส่รหัสผ่าน` ให้ยกมือเรียก TA — AI CLI ต้องใช้สิทธิ์นี้ตอนติดตั้ง Nginx ช่วง Deploy
+> ❗ ถ้าบรรทัดสุดท้ายขึ้น `sudo: ต้องใส่รหัสผ่าน` ให้ทำหัวข้อ 4.1 ด้านล่าง — AI CLI ต้องใช้สิทธิ์นี้ตอนติดตั้งโปรแกรมและ Nginx ช่วง Deploy
+
+<a id="sudo-nopasswd"></a>
+
+### 4.1 ตั้งให้ sudo ไม่ต้องใส่รหัสผ่าน (ทำเฉพาะเมื่อขึ้น `ต้องใส่รหัสผ่าน`)
+
+Claude Code พิมพ์รหัสผ่านให้เราไม่ได้ ถ้า `sudo` ยังถามรหัสอยู่ ตอน AI สั่งติดตั้งโปรแกรมจะค้างหรือล้มเหลว
+
+วางบล็อกนี้ใน Terminal ของ VS Code แล้วใส่ **รหัสผ่าน SSH ของคุณ** เมื่อระบบถาม (พิมพ์แล้วมองไม่เห็นตัวอักษร ถือว่าปกติ):
+
+```bash
+# อนุญาตให้ผู้ใช้ admins ใช้ sudo โดยไม่ต้องใส่รหัสผ่าน
+echo "admins ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/90-admins-nopasswd
+sudo chmod 440 /etc/sudoers.d/90-admins-nopasswd
+sudo visudo -cf /etc/sudoers.d/90-admins-nopasswd
+
+# ล้างรหัสที่จำไว้ แล้วทดสอบใหม่
+sudo -k
+sudo -n true && echo "sudo: OK" || echo "sudo: ยังต้องใส่รหัสผ่าน (แจ้ง TA)"
+```
+
+✅ **ผลที่ควรเห็น:**
+
+```text
+admins ALL=(ALL) NOPASSWD:ALL
+/etc/sudoers.d/90-admins-nopasswd: parsed OK
+sudo: OK
+```
+
+❌ ถ้าขึ้น `parsed OK` ไม่ครบ หรือบรรทัดสุดท้ายยังเป็น `ยังต้องใส่รหัสผ่าน` ให้ยกมือเรียก TA
+
+> ⚠️ **ใช้กับ VM ฝึกเท่านั้น** การตั้งแบบนี้ทำให้ใครก็ตามที่เข้าเครื่องได้ มีสิทธิ์ผู้ดูแลระบบเต็มทันที ห้ามทำบนเครื่องจริงของหน่วยงาน
+>
+> หลังอบรม ถ้าจะใช้ VM ต่อ ให้ยกเลิกด้วยคำสั่ง `sudo rm /etc/sudoers.d/90-admins-nopasswd`
 
 > 📘 **อ่านเพิ่มเติม (ไม่บังคับ):** คำสั่ง Linux อื่น ๆ ใน [linux/01_LINUX.md](linux/01_LINUX.md) · เข้า VM โดยไม่ต้องพิมพ์รหัสผ่านด้วย SSH Key ใน [linux/02_PUBLICKEY.md](linux/02_PUBLICKEY.md) · รายละเอียด VS Code Remote - SSH เพิ่มเติมใน [linux/04_VSCODE.md](linux/04_VSCODE.md)
 

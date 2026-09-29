@@ -48,7 +48,7 @@ echo "== ufw =="; sudo ufw status 2>/dev/null | head -n 1
 | ขึ้นหน้าเลือกวิธีล็อกอิน | ไม่มี `~/.claude/settings.json` | วางบล็อกตั้งค่า GLM ใหม่ |
 | `localhost:3002` ไม่ขึ้น | ยังไม่ได้ Forward port / preview ไม่รัน | แท็บ PORTS → Forward a Port `3002` / `npx hyperframes preview --background --port 3002` ใน `~/myvideo` |
 | ตัวไทยในวิดีโอเป็น □□□ | ไม่มีฟอนต์ไทย | `sudo apt-get install -y fonts-thai-tlwg fonts-noto-core` แล้ว render ใหม่ |
-| AI ขอ sudo แล้วค้าง/ล้มเหลว | ไม่ได้ตั้ง NOPASSWD | `echo "$USER ALL=(ALL) NOPASSWD:ALL" \| sudo tee /etc/sudoers.d/90-training-$USER` (ใส่รหัสผู้อบรม) |
+| AI ขอ sudo แล้วค้าง/ล้มเหลว | ไม่ได้ตั้ง NOPASSWD | ให้ทำคู่มือ 02 หัวข้อ 4.1 (ใส่รหัส SSH ของผู้อบรม) |
 | AI สร้างไฟล์ผิดโฟลเดอร์ | เปิด `claude` นอก `~/myapp` | ย้ายไฟล์: `mv ~/index.html ~/myapp/` |
 | เว็บขึ้น "Welcome to nginx!" | config default ยังเปิด | ดู troubleshooting หัวข้อ Deploy |
 | Certbot `DNS problem` / `Timeout` | DNS ยังไม่ชี้มา / ยังเปิดเมฆส้ม / port 80 ปิด | ตรวจ `getent hosts โดเมน` ต้องได้ IP ของ VM · ตั้ง record เป็น DNS only · เปิด port 80/443 |
