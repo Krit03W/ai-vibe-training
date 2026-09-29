@@ -6,6 +6,8 @@
 
 ## สิ่งที่ต้องรู้ก่อน
 
+![ทำไมต้องนำเครื่องมือขึ้นเว็บจริง](images/07_why_go_live.jpg)
+
 ```mermaid
 flowchart LR
     U["📱 มือถือ / เบราว์เซอร์<br/>https://trainee01.your-training..."] -->|"1. ถาม DNS: ชื่อนี้อยู่ที่ IP ไหน"| CF["☁️ Cloudflare DNS<br/>(เมฆสีเทา · DNS only)"]
@@ -36,6 +38,8 @@ flowchart LR
 ---
 
 ## ขั้นที่ 1 — ให้ AI ติดตั้ง Nginx + Certbot (10 นาที)
+
+![ขั้นที่ 1: ให้ AI ติดตั้ง Nginx และ Certbot](images/07_install_nginx_certbot.jpg)
 
 ### 1.1 เข้า VM และเปิด Claude Code ต่อจากเมื่อเช้า
 
@@ -183,6 +187,26 @@ getent hosts trainee01.your-training-domain.com
 
 ## ขั้นที่ 3 — ขอ HTTPS ด้วย Certbot แล้วทดสอบ (10 นาที)
 
+ทำไมต้องตั้ง DNS ก่อน แล้วค่อยขอใบรับรอง:
+
+```mermaid
+sequenceDiagram
+    participant U as เรา
+    participant VM as VM (Nginx + Certbot)
+    participant CF as Cloudflare DNS
+    participant LE as Let's Encrypt
+    U->>VM: สั่ง certbot ขอใบรับรองให้ trainee01.โดเมน
+    VM->>LE: ขอใบรับรอง
+    LE->>CF: ชื่อนี้อยู่ที่ IP ไหน?
+    CF-->>LE: IP ของ VM (เพราะตั้ง DNS ไว้แล้วในขั้นที่ 2)
+    LE->>VM: เข้ามาตรวจที่ port 80 ว่าเป็นเจ้าของจริง
+    VM-->>LE: ยืนยันได้ ✅
+    LE-->>VM: ออกใบรับรอง 🔒
+    VM-->>U: เปิด https:// ได้แล้ว
+```
+
+> 📌 ถ้า DNS ยังไม่ชี้มาที่ VM หรือยังเปิดเมฆสีส้ม Let's Encrypt จะหา VM ไม่เจอ แล้ว Certbot จะขึ้น `DNS problem` หรือ `Timeout`
+
 ### 3.1 สั่ง AI ขอใบรับรอง
 
 วางใน Claude Code (แก้ `trainee01` เป็น subdomain ของตัวเอง):
@@ -271,6 +295,8 @@ sudo cp -r ~/myapp/. /var/www/myapp/
 ---
 
 ## ⚠️ ข้อควรระวัง
+
+![ข้อควรระวังก่อนเผยแพร่เว็บจริง](images/07_publish_cautions.jpg)
 
 - เว็บนี้ **เปิดสาธารณะ** ทุกคนบนอินเทอร์เน็ตเข้าได้ — ห้ามใส่ข้อมูลส่วนบุคคล / ข้อมูลภายในหน่วยงาน
 - VM และโดเมนนี้ใช้ **เพื่อการอบรมเท่านั้น** ทีมงานจะปิดหลังจบการอบรม — ถ้าจะใช้งานจริง ต้องผ่าน IT ของหน่วยงาน
