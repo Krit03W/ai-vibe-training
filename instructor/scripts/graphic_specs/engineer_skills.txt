@@ -1,0 +1,17 @@
+LAYOUT: a left-to-right flow of 6 connected step cards with arrows (the main content, about 70% of height), plus a bottom strip split in two.
+
+Above the flow, a small navy label: "Engineer Skills: ทำงานกับ AI แบบวิศวกร"
+
+Six cards, each: a number circle, a clean icon, the command in a monospace pill, a bold Thai name, and one short Thai line:
+  1 icon: two speech bubbles with a question mark. Pill "/grill-with-docs". Name "สัมภาษณ์ให้ชัด". Line "AI ถามทีละข้อ ก่อนเริ่มสร้าง"
+  2 icon: three small screen layouts side by side. Pill "/prototype". Name "ลองหน้าตา". Line "ทำหลายแบบให้เลือก"
+  3 icon: a document with a checklist. Pill "/to-spec". Name "เขียนสเปก". Line "สรุปสิ่งที่ตกลงเป็นเอกสาร"
+  4 icon: one big card splitting into three small cards. Pill "/to-tickets". Name "แตกเป็นงานย่อย". Line "งานละชิ้นเล็ก ทำง่าย"
+  5 icon: gear with a code bracket. Pill "/implement". Name "ทำทีละงาน". Line "เขียนโค้ด ทดสอบ บันทึกงาน"
+  6 icon: magnifying glass over a document with a green check. Pill "/code-review". Name "ตรวจงาน". Line "เทียบกับสเปกที่ตกลงไว้"
+A curved arrow from card 6 back to card 5 with small label "งานถัดไป".
+
+BOTTOM strip left half (ice-blue) with a lightbulb icon:
+  bold "ใช้ในห้องอบรม:" then "สัมภาษณ์ให้ชัด + ลองหน้าตา"
+BOTTOM strip right half (white with navy border) with a team icon:
+  bold "ทีม IT ต่อยอด:" then "ครบทั้ง 6 ขั้น"

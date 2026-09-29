@@ -166,6 +166,16 @@ curl -sI https://coding.modelharbor.com | head -n 1
 
 User ของ VM ยังไม่ได้ตั้ง sudo แบบไม่ต้องใส่รหัสผ่าน → แจ้ง TA หรือใช้ **🛟 ทางสำรอง** ใน [07_DEPLOY_CLOUDFLARE](07_DEPLOY_CLOUDFLARE.md) โดยออกจาก Claude Code แล้ววางคำสั่งเอง (จะถามรหัสผ่าน VM — ใส่รหัสจากซอง)
 
+### พิมพ์ `/grill-with-docs` แล้วขึ้น `Unknown command` / AI ไม่รู้จัก skill
+
+- ตรวจว่าติดตั้งแล้ว: `ls ~/.claude/skills` ต้องเห็นชื่อ skill
+- ถ้ายังไม่มี: `npx -y skills@latest add Krit03W/krit-engineer-skills -g -a claude-code -s '*' -y`
+- **ออกจาก Claude Code (`/exit`) แล้วเปิดใหม่** — skill ที่ติดตั้งระหว่างเปิดอยู่จะยังไม่ถูกโหลด
+
+### skill ขอให้รัน `/setup-krit-skills` หรือถามเรื่อง GitHub / issue tracker
+
+ยังไม่มีไฟล์ `CONTEXT.md` → ทำขั้น "เตรียมโปรเจกต์ครั้งเดียว" ใน [10_WORKSHOP_BANK](10_WORKSHOP_BANK.md) (หัวข้อ Engineer Skills) หรือพิมพ์บอก AI ว่า `ไม่ต้องตั้งค่า issue tracker ใช้แบบ local`
+
 ### AI ทำงานนานมาก / วนไปวนมา
 
 กด `Esc` เพื่อหยุด แล้วพิมพ์สั่งให้ชัดขึ้น เช่น:

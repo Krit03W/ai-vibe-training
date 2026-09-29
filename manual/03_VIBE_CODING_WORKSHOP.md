@@ -90,7 +90,7 @@ mkdir -p ~/myapp && cd ~/myapp && pwd
 
 ✅ **ผลที่ควรเห็น:** `/home/trainee01/myapp`
 
-### ขั้นที่ 2 — ติดตั้ง Claude Code และเชื่อมกับ AI GLM (5 นาที)
+### ขั้นที่ 2 — ติดตั้ง Claude Code + Engineer Skills และเชื่อมกับ AI GLM (10 นาที)
 
 **2.0 เตรียมเครื่องมือพื้นฐาน** (VM ใหม่ยังไม่มีอะไรเลย วางครั้งเดียว)
 
@@ -99,6 +99,9 @@ mkdir -p ~/myapp && cd ~/myapp && pwd
 sudo apt-get update -y
 sudo apt-get install -y curl git ca-certificates nano python3
 
+# ติดตั้ง Node.js 22 (ใช้ติดตั้ง Engineer Skills ในขั้นที่ 2.4 และ HyperFrames ใน Module 3) — ถ้ามีแล้วจะข้าม
+node -v 2>/dev/null | grep -qE '^v(2[2-9]|[3-9][0-9])' || { curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs; }
+
 # ดาวน์โหลดคู่มือและไฟล์ตัวอย่างไว้ที่ ~/training (ถ้ามีอยู่แล้วจะอัปเดตให้)
 [ -d ~/training/.git ] && git -C ~/training pull --ff-only || git clone --depth 1 https://github.com/Krit03W/ai-vibe-training.git ~/training
 
@@ -106,7 +109,7 @@ sudo apt-get install -y curl git ca-certificates nano python3
 sudo -n true && echo "sudo: OK ✅" || echo "sudo: ต้องใส่รหัสผ่าน ❌ (แจ้ง TA)"
 ```
 
-✅ **ผลที่ควรเห็น:** ไม่มีข้อความ `E:` (error) · มีโฟลเดอร์ `~/training` · บรรทัดสุดท้ายขึ้น `sudo: OK ✅`
+✅ **ผลที่ควรเห็น:** ไม่มีข้อความ `E:` (error) · มีโฟลเดอร์ `~/training` · `node -v` ขึ้น `v22.x` · บรรทัดสุดท้ายขึ้น `sudo: OK ✅`
 
 > ❗ ถ้าขึ้น `sudo: ต้องใส่รหัสผ่าน` — AI จะติดตั้งโปรแกรมให้ไม่ได้ ให้ TA ตั้งค่า sudo แบบไม่ใส่รหัส (คู่มือทีมงาน `setup_vm.sh`) หรือรันคำสั่งที่มี `sudo` ด้วยตัวเองใน Terminal
 
@@ -232,7 +235,34 @@ grep -q '"your-api''-key"' ~/.claude/settings.json && echo "❌ ยังไม�
 
 > ⚠️ **API Key = รหัสผ่าน** ไฟล์ `~/.claude/settings.json` อยู่ในเครื่องเราเท่านั้น — ห้ามคัดลอกไฟล์นี้ไปที่อื่น, ห้ามส่ง key ในแชทกลุ่ม, ห้ามถ่ายภาพหน้าจอที่เห็น key (เชื่อมกับ Module 4)
 
-### ขั้นที่ 2.4 — เปิด Claude Code
+### ขั้นที่ 2.4 — ติดตั้ง Engineer Skills (krit-skills)
+
+![Engineer Skills 6 ขั้น: สัมภาษณ์ → ลองหน้าตา → เขียนสเปก → แตกงาน → ทำทีละงาน → ตรวจงาน](images/03_engineer_skills.jpg)
+
+
+**Skill** คือ "คู่มือการทำงาน" ที่ติดตั้งให้ Claude Code เช่น ให้ AI **สัมภาษณ์เราก่อนสร้าง** (`/grill-with-docs`) หรือ **ทำหน้าตาหลายแบบให้เลือก** (`/prototype`) — ติดตั้งครั้งเดียว ใช้ได้ทุกโฟลเดอร์
+
+```bash
+# ติดตั้ง Engineer Skills ทั้งชุดให้ Claude Code (ใช้เวลาประมาณ 30 วินาที)
+npx -y skills@latest add Krit03W/krit-engineer-skills -g -a claude-code -s '*' -y
+```
+
+```bash
+# ตรวจว่าติดตั้งแล้ว
+ls ~/.claude/skills
+```
+
+✅ **ผลที่ควรเห็น:** รายชื่อ skill 16 ตัว เช่น `grill-with-docs`, `prototype`, `to-spec`, `to-tickets`, `implement`, `code-review`
+
+| Skill ที่ใช้ในวันนี้ | ทำอะไร |
+|---|---|
+| `/grill-with-docs` | AI **สัมภาษณ์เราทีละคำถาม** จนชัดว่าจะสร้างอะไร ก่อนเริ่มเขียนโค้ด |
+| `/prototype` | AI ทำ **หน้าตาหลายแบบ** ในหน้าเดียว ให้เราสลับดูแล้วเลือก |
+| `/to-spec` → `/to-tickets` → `/implement` → `/code-review` | ขั้นตอนแบบวิศวกร: เขียนสเปก → แตกงาน → ทำทีละงาน → ตรวจงาน (Workshop สำรอง 2K–2M) |
+
+> 📘 รายละเอียดทุก skill: <https://github.com/Krit03W/krit-engineer-skills>
+
+### ขั้นที่ 2.5 — เปิด Claude Code
 
 **ต้องอยู่ในโฟลเดอร์ `~/myapp` ก่อนเปิดเสมอ** (AI จะทำงานในโฟลเดอร์ที่เปิด)
 
@@ -260,7 +290,7 @@ cd ~/myapp && claude
 
 ❌ ขึ้น `API Error`, `401`, `Invalid API key` หรือค้างนาน → ดู [09_TROUBLESHOOTING](09_TROUBLESHOOTING.md#claude-glm)
 
-### ขั้นที่ 3 — สั่งสร้างเครื่องมือ (15 นาที)
+### ขั้นที่ 3 — สั่งสร้างเครื่องมือ (12 นาที)
 
 #### 3.1 วิธีคุยกับ Claude Code
 
@@ -365,6 +395,18 @@ cd ~/myapp && claude
 - ห้ามเก็บหรือส่งข้อมูลที่ผู้ใช้กรอกออกไปที่ไหน
 - สร้างเสร็จแล้วให้เปิดทดสอบด้วยคำสั่ง python3 -m http.server 8080 แบบรันเบื้องหลัง (background) แล้วใช้ curl เรียก http://localhost:8080 เพื่อตรวจว่าหน้าเว็บตอบกลับได้
 - สรุปให้ฉันฟังเป็นภาษาไทยสั้น ๆ ว่าสร้างอะไรไปบ้าง
+```
+
+**โจทย์ F — ให้ AI สัมภาษณ์ก่อนสร้าง** (ไม่ต้องเขียน prompt เอง · ใช้ skill ที่ติดตั้งในขั้นที่ 2.4)
+
+```text
+/grill-with-docs ฉันอยากได้เครื่องมือเล็ก ๆ ช่วยงานของฉัน สัมภาษณ์ฉันทีละคำถามเป็นภาษาไทย ไม่เกิน 6 คำถาม ไม่ต้องตั้งค่า issue tracker และไม่ต้องสร้าง ADR เมื่อได้คำตอบครบให้สรุปสิ่งที่จะสร้าง แล้วรอฉันยืนยันก่อน
+```
+
+ตอบคำถามของ AI ไปเรื่อย ๆ พอ AI สรุปแล้ว ถ้าตรงใจให้พิมพ์ต่อ:
+
+```text
+ยืนยัน สร้างได้เลย ตามข้อกำหนดทางเทคนิค: ไฟล์เดียว index.html ในโฟลเดอร์ปัจจุบัน ไม่มี backend ไม่เก็บข้อมูลที่กรอก และรัน python3 -m http.server 8080 แบบ background ให้ทดสอบ
 ```
 
 #### 3.3 ตรวจผลด้วยตัวเอง

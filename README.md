@@ -40,7 +40,7 @@
    - คำสั่ง `ssh` บน Windows / macOS, การพิมพ์รหัสผ่านที่ "มองไม่เห็น"
    - คำสั่งพื้นฐาน 6 คำสั่งที่ต้องรู้ (`pwd`, `ls`, `cd`, `mkdir`, `cat`, `exit`)
 3. [**03_VIBE_CODING_WORKSHOP.md**](manual/03_VIBE_CODING_WORKSHOP.md) — **Workshop 2: ติดตั้ง AI CLI (Claude Code) แล้วสั่งสร้างเครื่องมือ**
-   - ติดตั้ง Claude Code บน VM และเชื่อมกับ AI GLM ของเรา
+   - ติดตั้ง Claude Code บน VM, เชื่อมกับ AI GLM ของเรา และติดตั้ง [Engineer Skills](https://github.com/Krit03W/krit-engineer-skills) (`/grill-with-docs`, `/prototype` ฯลฯ)
    - Prompt สำเร็จรูป 5 โจทย์ (เครื่องคำนวณวันลา, แบบฟอร์ม, หน้าแนะนำหน่วยงาน ฯลฯ)
    - ให้ AI สร้างสูตร Excel จากไฟล์ตัวอย่าง
 4. [**04_MEDIA_WORKSHOP.md**](manual/04_MEDIA_WORKSHOP.md) — **Workshop 3: ผลิตสื่อด้วย AI — โปสเตอร์ + ตัดต่อวิดีโอ**

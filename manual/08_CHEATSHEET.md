@@ -40,6 +40,10 @@
 | เตรียมเครื่อง (VM ใหม่) | `sudo apt-get update -y && sudo apt-get install -y curl git ca-certificates nano` |
 | เปิด (ในโฟลเดอร์งาน) | `cd ~/myapp && claude` |
 | สร้างคำสั่งลัด `ccc` | `echo 'alias ccc="claude --permission-mode bypassPermissions"' >> ~/.bashrc && source ~/.bashrc` |
+| ติดตั้ง Engineer Skills | `npx -y skills@latest add Krit03W/krit-engineer-skills -g -a claude-code -s '*' -y` |
+| ให้ AI สัมภาษณ์ก่อนสร้าง | `/grill-with-docs …` (พิมพ์ใน Claude Code) |
+| ต้นแบบหน้าตาหลายแบบ | `/prototype …` |
+| ขั้นตอนแบบวิศวกร | `/to-spec` → `/to-tickets` → `/implement` → `/code-review` |
 | เปิดแบบไม่ต้องกด Yes | `cd ~/myapp && ccc` (ใช้บน VM ฝึกเท่านั้น) |
 | เปิดแล้วคุยต่อจากเดิม | `cd ~/myapp && claude --continue` |
 | รันคำสั่งเองในหน้า Claude | `!คำสั่ง` เช่น `!ls` |
